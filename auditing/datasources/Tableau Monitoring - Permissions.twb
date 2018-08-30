@@ -1,0 +1,993 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 10500.18.0510.1801                               -->
+<workbook original-version='10.3' source-build='10.5.4 (10500.18.0510.1801)' source-platform='win' upgrade-extracts='false' version='10.5' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource hasconnection='false' inline='true' name='Parameters' version='10.5'>
+      <aliases enabled='yes' />
+      <column alias='- Any' caption='Select Permission' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;All&quot;'>
+        <calculation class='tableau' formula='&quot;All&quot;' />
+        <aliases>
+          <alias key='&quot;add_comment&quot;' value='Add Comment' />
+          <alias key='&quot;All&quot;' value='- Any' />
+          <alias key='&quot;change_hierarchy&quot;' value='Move' />
+          <alias key='&quot;change_permissions&quot;' value='Set Permissions' />
+          <alias key='&quot;connect&quot;' value='Connect' />
+          <alias key='&quot;delete&quot;' value='Delete' />
+          <alias key='&quot;export_data&quot;' value='Download Data' />
+          <alias key='&quot;export_image&quot;' value='Download Image' />
+          <alias key='&quot;export_xml&quot;' value='Download / Save As' />
+          <alias key='&quot;filter&quot;' value='Filter' />
+          <alias key='&quot;read&quot;' value='View' />
+          <alias key='&quot;share_view&quot;' value='Share View' />
+          <alias key='&quot;view_comments&quot;' value='View Comments' />
+          <alias key='&quot;vud&quot;' value='Download Full Data' />
+          <alias key='&quot;web_authoring&quot;' value='Web Edit' />
+          <alias key='&quot;write&quot;' value='Save' />
+        </aliases>
+        <members>
+          <member alias='- Any' value='&quot;All&quot;' />
+          <member alias='Add Comment' value='&quot;add_comment&quot;' />
+          <member alias='Connect' value='&quot;connect&quot;' />
+          <member alias='Delete' value='&quot;delete&quot;' />
+          <member alias='Download / Save As' value='&quot;export_xml&quot;' />
+          <member alias='Download Data' value='&quot;export_data&quot;' />
+          <member alias='Download Full Data' value='&quot;vud&quot;' />
+          <member alias='Download Image' value='&quot;export_image&quot;' />
+          <member alias='Filter' value='&quot;filter&quot;' />
+          <member alias='Move' value='&quot;change_hierarchy&quot;' />
+          <member alias='Save' value='&quot;write&quot;' />
+          <member alias='Set Permissions' value='&quot;change_permissions&quot;' />
+          <member alias='Share View' value='&quot;share_view&quot;' />
+          <member alias='View' value='&quot;read&quot;' />
+          <member alias='View Comments' value='&quot;view_comments&quot;' />
+          <member alias='Web Edit' value='&quot;web_authoring&quot;' />
+        </members>
+      </column>
+      <column caption='Object Type' datatype='string' name='[Parameter 3]' param-domain-type='list' role='measure' type='nominal' value='&quot;Datasource&quot;'>
+        <calculation class='tableau' formula='&quot;Datasource&quot;' />
+        <members>
+          <member value='&quot;Workbook&quot;' />
+          <member value='&quot;Datasource&quot;' />
+        </members>
+      </column>
+    </datasource>
+    <datasource inline='true' name='Tableau Monitoring - Permissions' version='10.5'>
+      <repository-location id='TableauMonitoring-Permissions' path='datasources' revision='1.8' />
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='10.165.255.62' name='postgres.0e4vwml1pl5moa1d85q410gue8ns'>
+            <connection authentication='username-password' class='postgres' dbname='workgroup' odbc-connect-string-extras='UseDeclareFetch=0' odbc-native-protocol='yes' one-time-sql='' port='8060' server='10.165.255.62' server-oauth='' server-userid='82' username='readonly' workgroup-auth-mode='prompt' />
+          </named-connection>
+        </named-connections>
+        <relation connection='postgres.0e4vwml1pl5moa1d85q410gue8ns' name='permissions' type='text'>WITH&#13;&#10;bi AS &#13;&#10;----- determine who is part of BI -----&#13;&#10;    (&#13;&#10;    SELECT&#13;&#10;      gu.user_id&#13;&#10;    , bool_or(CASE WHEN g.name LIKE &apos;BI%&apos; AND g.name &lt;&lt;&gt;&gt; &apos;BI - PowerUsers&apos; THEN true ELSE false END) AS user_is_part_of_bi&#13;&#10;    FROM group_users gu&#13;&#10;    INNER JOIN groups g ON g.id = gu.group_id&#13;&#10;    GROUP BY 1&#13;&#10;    )&#13;&#10;    &#13;&#10;---------------------------------------------------------&#13;&#10;-- MAIN QUERY&#13;&#10;---------------------------------------------------------&#13;&#10;SELECT&#13;&#10;  ngp.authorizable_type AS objecttype&#13;&#10;, ngp.authorizable_id&#13;&#10;, COALESCE(usite.name, gsite.name) AS sitename&#13;&#10;, COALESCE(wb.name, ds.name) AS objectname&#13;&#10;, COALESCE(wb.repository_url, ds.repository_url) AS objecturl&#13;&#10;, proj.name AS projectname&#13;&#10;, obj_su.name AS owner_username&#13;&#10;, obj_su.friendly_name AS owner_fullname&#13;&#10;, COALESCE(gsu.name, su.name) AS username&#13;&#10;, COALESCE(gsu.friendly_name, su.friendly_name) AS fullname&#13;&#10;, COALESCE(gr.name, &apos;  -- &apos; || su.friendly_name) AS usergroup&#13;&#10;, lic.name AS licensing_role&#13;&#10;, CASE WHEN COALESCE(gsu.name, su.name) IN (&apos;rmacgregor&apos;,&apos;sbryant&apos;,&apos;jgraham&apos;) THEN false ELSE bi.user_is_part_of_bi END user_is_part_of_bi&#13;&#10;, ngp.grantee_type&#13;&#10;, c.name AS capability&#13;&#10;, CASE WHEN pr.reason LIKE &apos;%_DISALLOW&apos; THEN &apos;Disallow&apos; WHEN pr.reason LIKE &apos;%_ALLOW&apos; THEN &apos;Allow&apos; END permission&#13;&#10;, COALESCE(ds.connectable, true) AS tf_published&#13;&#10;, ds.db_class&#13;&#10;, MIN(dc.id) AS dataconnection_id&#13;&#10;&#13;&#10;FROM next_gen_permissions ngp&#13;&#10;&#13;&#10;INNER JOIN capabilities c ON c.id = ngp.capability_id&#13;&#10;INNER JOIN permission_reasons pr ON pr.precedence = ngp.permission&#13;&#10;&#13;&#10;----- retrieve permissions via named users -----&#13;&#10;LEFT JOIN users u ON u.id = ngp.grantee_id AND grantee_type = &apos;User&apos;&#13;&#10;LEFT JOIN system_users su ON su.id = u.system_user_id&#13;&#10;LEFT JOIN sites usite ON usite.id = u.site_id&#13;&#10;&#13;&#10;----- retrieve permissions via user groups (+ retrieve each individual user)&#13;&#10;LEFT JOIN groups gr ON gr.id = ngp.grantee_id AND grantee_type = &apos;Group&apos;&#13;&#10;LEFT JOIN group_users gu ON gu.group_id = gr.id&#13;&#10;LEFT JOIN users gusr ON gusr.id = gu.user_id&#13;&#10;LEFT JOIN system_users gsu ON gsu.id = gusr.system_user_id&#13;&#10;LEFT JOIN sites gsite ON gsite.id = gr.site_id&#13;&#10;&#13;&#10;LEFT JOIN bi ON bi.user_id = COALESCE(u.id, gu.user_id)&#13;&#10;LEFT JOIN licensing_roles lic ON lic.id = COALESCE(su.seat_licensing_role_id, gsu.seat_licensing_role_id)&#13;&#10;&#13;&#10;----- retrieve workbook / datasource information -----&#13;&#10;LEFT JOIN workbooks wb ON wb.id = ngp.authorizable_id AND ngp.authorizable_type = &apos;Workbook&apos;&#13;&#10;LEFT JOIN datasources ds ON ds.id = ngp.authorizable_id AND ngp.authorizable_type = &apos;Datasource&apos;&#13;&#10;LEFT JOIN data_connections dc ON datasource_id = ds.id&#13;&#10;INNER JOIN projects proj ON proj.id = COALESCE(wb.project_id, ds.project_id)&#13;&#10;INNER JOIN users obj_u ON obj_u.id = COALESCE(wb.owner_id, ds.owner_id)&#13;&#10;INNER JOIN system_users obj_su ON obj_su.id = obj_u.system_user_id&#13;&#10;&#13;&#10;WHERE ngp.authorizable_type IN (&apos;Datasource&apos;,&apos;Workbook&apos;)&#13;&#10;GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18</relation>
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>objecttype</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[objecttype]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>objecttype</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>64</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>authorizable_id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[authorizable_id]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>authorizable_id</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>sitename</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[sitename]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>sitename</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>objectname</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[objectname]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>objectname</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>objecturl</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[objecturl]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>objecturl</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>projectname</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[projectname]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>projectname</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>owner_username</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[owner_username]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>owner_username</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>owner_fullname</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[owner_fullname]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>owner_fullname</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>username</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[username]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>username</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>fullname</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[fullname]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>fullname</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>usergroup</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[usergroup]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>usergroup</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>licensing_role</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[licensing_role]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>licensing_role</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>user_is_part_of_bi</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[user_is_part_of_bi]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>user_is_part_of_bi</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_BIT&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_BIT&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>grantee_type</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[grantee_type]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>grantee_type</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>capability</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[capability]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>capability</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>80</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>permission</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[permission]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>permission</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>tf_published</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[tf_published]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>tf_published</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_BIT&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_BIT&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>db_class</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[db_class]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>db_class</remote-alias>
+            <ordinal>18</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>dataconnection_id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[dataconnection_id]</local-name>
+            <parent-name>[permissions]</parent-name>
+            <remote-alias>dataconnection_id</remote-alias>
+            <ordinal>19</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>4</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='T/F BI User Group' datatype='boolean' name='[Calculation_1070167924666519552]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IIF(STARTSWITH([usergroup], &apos;BI&apos;) AND [usergroup] != &apos;BI - PowerUsers&apos;, True, False)' />
+      </column>
+      <column caption='# Unique User Groups' datatype='integer' name='[Calculation_219832010816110593]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='COUNTD([usergroup])' />
+      </column>
+      <column caption='# Users' datatype='integer' name='[Calculation_219832010838892550]' role='measure' type='ordinal'>
+        <calculation class='tableau' formula='COUNTD([username])' />
+      </column>
+      <column caption='Capability Group' datatype='string' name='[Calculation_219832010868072458]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='CASE [objecttype]&#13;&#10;WHEN &apos;Workbook&apos; THEN [Capability (group)]&#13;&#10;WHEN &apos;Datasource&apos; THEN [Capability Group (workbooks) (copy)]&#13;&#10;END' />
+      </column>
+      <column caption='Filter - Object' datatype='boolean' name='[Calculation_219832010870423564]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='[objecttype] = [Parameters].[Parameter 3]' />
+      </column>
+      <column caption='Padding' datatype='string' name='[Calculation_387591097716252676]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='&apos;&apos;' />
+      </column>
+      <column caption='User Is Unlicensed?' datatype='boolean' name='[Calculation_689332262958235648]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='[licensing_role] = &apos;Unlicensed&apos;' />
+      </column>
+      <column aggregation='Sum' caption='Permission Num' datatype='integer' name='[Calculation_941252375796662273]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='CASE [permission] &#13;&#10;WHEN &apos;Allow&apos; THEN 1&#13;&#10;WHEN &apos;Disallow&apos; THEN - 1&#13;&#10;END' />
+      </column>
+      <column aggregation='Sum' caption='Fixed Calculation' datatype='integer' name='[Calculation_941252375816290307]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='CASE [Parameters].[Parameter 1]&#13;&#10;WHEN &apos;All&apos; THEN [Calculation_941252375796662273]&#13;&#10;ELSE {FIXED [objectname], [usergroup], [username], [projectname]: MAX(IIF([Parameters].[Parameter 1] = [capability], [Calculation_941252375796662273], 0))}&#13;&#10;END' />
+      </column>
+      <column caption='Capability - Selected' datatype='string' name='[Calculation_941252375820345348]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IF [Parameters].[Parameter 1] = [capability] THEN &apos;Selected&apos;&#13;&#10;ELSEIF  [Parameters].[Parameter 1] = &apos;All&apos; THEN &apos;All&apos;&#13;&#10;ELSE &apos;Not Selected&apos;&#13;&#10;END' />
+      </column>
+      <column caption='Capability Group (workbooks)' datatype='string' name='[Capability (group)]' role='dimension' type='nominal'>
+        <calculation class='categorical-bin' column='[capability]' default='&quot;Other&quot;' new-bin='true'>
+          <bin default-name='false' value='&quot;Edit&quot;'>
+            <value>&quot;change_hierarchy&quot;</value>
+            <value>&quot;change_permissions&quot;</value>
+            <value>&quot;delete&quot;</value>
+            <value>&quot;export_xml&quot;</value>
+            <value>&quot;write&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;Interact&quot;'>
+            <value>&quot;filter&quot;</value>
+            <value>&quot;share_view&quot;</value>
+            <value>&quot;vud&quot;</value>
+            <value>&quot;web_authoring&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;View&quot;'>
+            <value>&quot;add_comment&quot;</value>
+            <value>&quot;export_data&quot;</value>
+            <value>&quot;export_image&quot;</value>
+            <value>&quot;read&quot;</value>
+            <value>&quot;view_comments&quot;</value>
+          </bin>
+        </calculation>
+      </column>
+      <column caption='Capability Group (data sources)' datatype='string' name='[Capability Group (workbooks) (copy)]' role='dimension' type='nominal'>
+        <calculation class='categorical-bin' column='[capability]' default='&quot;Other&quot;' new-bin='true'>
+          <bin default-name='false' value='&quot;Edit&quot;'>
+            <value>&quot;change_permissions&quot;</value>
+            <value>&quot;delete&quot;</value>
+            <value>&quot;export_xml&quot;</value>
+            <value>&quot;write&quot;</value>
+          </bin>
+          <bin default-name='false' value='&quot;Use&quot;'>
+            <value>&quot;connect&quot;</value>
+            <value>&quot;read&quot;</value>
+          </bin>
+        </calculation>
+      </column>
+      <column caption='#' datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column aggregation='Sum' caption='Object Id' datatype='integer' name='[authorizable_id]' role='dimension' type='ordinal' />
+      <column caption='Capability' datatype='string' name='[capability]' role='dimension' type='nominal'>
+        <aliases>
+          <alias key='&quot;add_comment&quot;' value='Add Comment' />
+          <alias key='&quot;change_hierarchy&quot;' value='Move' />
+          <alias key='&quot;change_permissions&quot;' value='Set Permissions' />
+          <alias key='&quot;connect&quot;' value='Connect' />
+          <alias key='&quot;delete&quot;' value='Delete' />
+          <alias key='&quot;export_data&quot;' value='Download Data' />
+          <alias key='&quot;export_image&quot;' value='Download Image' />
+          <alias key='&quot;export_xml&quot;' value='Download / Save As' />
+          <alias key='&quot;filter&quot;' value='Filter' />
+          <alias key='&quot;read&quot;' value='View' />
+          <alias key='&quot;share_view&quot;' value='Share View' />
+          <alias key='&quot;view_comments&quot;' value='View Comments' />
+          <alias key='&quot;vud&quot;' value='Download Full Data' />
+          <alias key='&quot;web_authoring&quot;' value='Web Edit' />
+          <alias key='&quot;write&quot;' value='Save' />
+        </aliases>
+      </column>
+      <column aggregation='Sum' datatype='integer' name='[dataconnection_id]' role='dimension' type='ordinal' />
+      <column caption='Database' datatype='string' name='[db_class]' role='dimension' type='nominal'>
+        <aliases>
+          <alias key='&quot;exasolution&quot;' value='EXASOL' />
+          <alias key='&quot;excel-direct&quot;' value='Excel' />
+          <alias key='&quot;federated&quot;' value='Multiple' />
+          <alias key='&quot;oracle&quot;' value='Oracle' />
+          <alias key='&quot;textscan&quot;' value='Text File' />
+        </aliases>
+      </column>
+      <column caption='Full Name' datatype='string' name='[fullname]' role='dimension' type='nominal' />
+      <column caption='User or Group' datatype='string' name='[grantee_type]' role='dimension' type='nominal' />
+      <column caption='Licensing Role' datatype='string' name='[licensing_role]' role='dimension' type='nominal' />
+      <column caption='Object Name' datatype='string' name='[objectname]' role='dimension' type='nominal' />
+      <column caption='Object Type' datatype='string' name='[objecttype]' role='dimension' type='nominal' />
+      <column caption='Object URL' datatype='string' name='[objecturl]' role='dimension' type='nominal' />
+      <column caption='Permission' datatype='string' name='[permission]' role='dimension' type='nominal' />
+      <column caption='Project' datatype='string' name='[projectname]' role='dimension' type='nominal' />
+      <column caption='Site' datatype='string' name='[sitename]' role='dimension' type='nominal' />
+      <column caption='T/F Published' datatype='boolean' name='[tf_published]' role='dimension' type='nominal' />
+      <column caption='User is Part of BI?' datatype='boolean' name='[user_is_part_of_bi]' role='dimension' type='nominal' />
+      <column caption='User Group' datatype='string' name='[usergroup]' role='dimension' type='nominal' />
+      <column caption='User Name' datatype='string' name='[username]' role='dimension' type='nominal' />
+      <column-instance column='[Calculation_941252375796662273]' derivation='Max' name='[max:Calculation_941252375796662273:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[Calculation_941252375820345348]' derivation='None' name='[none:Calculation_941252375820345348:nk]' pivot='key' type='nominal' />
+      <column-instance column='[Calculation_941252375796662273]' derivation='Sum' name='[sum:Calculation_941252375796662273:ok]' pivot='key' type='ordinal' />
+      <group caption='Action (Capability Group (data sources),Capability,User or Group,User Group)' hidden='true' name='[Action (Capability Group (data sources),Capability,User or Group,User Group)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[Capability Group (workbooks) (copy)]' />
+          <groupfilter function='level-members' level='[capability]' />
+          <groupfilter function='level-members' level='[grantee_type]' />
+          <groupfilter function='level-members' level='[usergroup]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (User Group)' hidden='true' name='[Action (User Group)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[usergroup]' />
+        </groupfilter>
+      </group>
+      <drill-paths>
+        <drill-path name='User Group, User Name'>
+          <field>[usergroup]</field>
+          <field>[fullname]</field>
+        </drill-path>
+      </drill-paths>
+      <folder name='Objects' role='dimensions'>
+        <folder-item name='[authorizable_id]' type='field' />
+        <folder-item name='[dataconnection_id]' type='field' />
+        <folder-item name='[db_class]' type='field' />
+        <folder-item name='[objectname]' type='field' />
+        <folder-item name='[objecttype]' type='field' />
+        <folder-item name='[objecturl]' type='field' />
+      </folder>
+      <folder name='Owners' role='dimensions'>
+        <folder-item name='[owner_fullname]' type='field' />
+        <folder-item name='[owner_username]' type='field' />
+      </folder>
+      <folder name='Permissions' role='dimensions'>
+        <folder-item name='[Calculation_219832010868072458]' type='field' />
+        <folder-item name='[Calculation_941252375796662273]' type='field' />
+        <folder-item name='[Calculation_941252375820345348]' type='field' />
+        <folder-item name='[Capability (group)]' type='field' />
+        <folder-item name='[Capability Group (workbooks) (copy)]' type='field' />
+        <folder-item name='[capability]' type='field' />
+        <folder-item name='[permission]' type='field' />
+      </folder>
+      <folder name='Quick Filters' role='dimensions'>
+        <folder-item name='[Calculation_1070167924666519552]' type='field' />
+        <folder-item name='[Calculation_219832010870423564]' type='field' />
+        <folder-item name='[tf_published]' type='field' />
+      </folder>
+      <folder name='Server' role='dimensions'>
+        <folder-item name='[projectname]' type='field' />
+        <folder-item name='[sitename]' type='field' />
+      </folder>
+      <folder name='Users' role='dimensions'>
+        <folder-item name='[Calculation_689332262958235648]' type='field' />
+        <folder-item name='[grantee_type]' type='field' />
+        <folder-item name='[licensing_role]' type='field' />
+        <folder-item name='[user_is_part_of_bi]' type='field' />
+        <folder-item name='[username]' type='field' />
+        <folder-item name='User Group, User Name' type='drillpath' />
+      </folder>
+      <extract count='-1' enabled='true' units='records'>
+        <connection access_mode='readonly' authentication='auth-none' author-locale='en_US' class='hyper' dbname='C:/Users/dteo/Documents/My Tableau Repository/Datasources/Tableau Permissions.hyper' default-settings='yes' schema='Extract' sslmode='' tablename='Extract' update-time='08/15/2018 02:21:24 PM' username='tableau_internal_user'>
+          <relation name='Extract' table='[Extract].[Extract]' type='table' />
+          <refresh>
+            <refresh-event add-from-file-path='' increment-value='%null%' refresh-type='create' rows-inserted='1920120' timestamp-start='2018-08-15 14:21:24.544' />
+          </refresh>
+          <metadata-records>
+            <metadata-record class='column'>
+              <remote-name>objecttype</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[objecttype]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>objecttype</remote-alias>
+              <ordinal>0</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>authorizable_id</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[authorizable_id]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>authorizable_id</remote-alias>
+              <ordinal>1</ordinal>
+              <family>permissions</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>72</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>sitename</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[sitename]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>sitename</remote-alias>
+              <ordinal>2</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>objectname</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[objectname]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>objectname</remote-alias>
+              <ordinal>3</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>72</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>objecturl</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[objecturl]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>objecturl</remote-alias>
+              <ordinal>4</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>72</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>projectname</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[projectname]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>projectname</remote-alias>
+              <ordinal>5</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>14</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>owner_username</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[owner_username]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>owner_username</remote-alias>
+              <ordinal>6</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>33</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>owner_fullname</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[owner_fullname]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>owner_fullname</remote-alias>
+              <ordinal>7</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>33</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>username</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[username]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>username</remote-alias>
+              <ordinal>8</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>264</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>fullname</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[fullname]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>fullname</remote-alias>
+              <ordinal>9</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>264</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>usergroup</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[usergroup]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>usergroup</remote-alias>
+              <ordinal>10</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>47</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>licensing_role</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[licensing_role]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>licensing_role</remote-alias>
+              <ordinal>11</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>user_is_part_of_bi</remote-name>
+              <remote-type>11</remote-type>
+              <local-name>[user_is_part_of_bi]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>user_is_part_of_bi</remote-alias>
+              <ordinal>12</ordinal>
+              <family>permissions</family>
+              <local-type>boolean</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>grantee_type</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[grantee_type]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>grantee_type</remote-alias>
+              <ordinal>13</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>capability</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[capability]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>capability</remote-alias>
+              <ordinal>14</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>15</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>permission</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[permission]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>permission</remote-alias>
+              <ordinal>15</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>tf_published</remote-name>
+              <remote-type>11</remote-type>
+              <local-name>[tf_published]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>tf_published</remote-alias>
+              <ordinal>16</ordinal>
+              <family>permissions</family>
+              <local-type>boolean</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>1</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>db_class</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[db_class]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>db_class</remote-alias>
+              <ordinal>17</ordinal>
+              <family>permissions</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>5</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>dataconnection_id</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[dataconnection_id]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>dataconnection_id</remote-alias>
+              <ordinal>18</ordinal>
+              <family>permissions</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>10</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+          </metadata-records>
+        </connection>
+      </extract>
+      <layout dim-ordering='alphabetic' dim-percentage='0.731103' measure-ordering='alphabetic' measure-percentage='0.17596' parameter-percentage='0.0929368' show-aliased-fields='true' show-structure='false' user-set-layout='true' />
+      <style>
+        <style-rule element='mark'>
+          <encoding attr='shape' field='[sum:Calculation_941252375796662273:ok]' type='shape'>
+            <map to='KPI/01.png'>
+              <bucket>1</bucket>
+            </map>
+            <map to='square'>
+              <bucket>2</bucket>
+            </map>
+          </encoding>
+          <encoding attr='shape' field='[max:Calculation_941252375796662273:ok]' type='shape'>
+            <map to='KPI/01.png'>
+              <bucket>1</bucket>
+            </map>
+            <map to='square'>
+              <bucket>2</bucket>
+            </map>
+          </encoding>
+          <encoding attr='color' field='[max:Calculation_941252375796662273:ok]' type='palette'>
+            <map to='#b60a1c'>
+              <bucket>1</bucket>
+            </map>
+          </encoding>
+          <encoding attr='color' field='[none:Calculation_941252375820345348:nk]' type='palette'>
+            <map to='#003b5c'>
+              <bucket>&quot;All&quot;</bucket>
+            </map>
+            <map to='#b3b7b8'>
+              <bucket>&quot;Not Selected&quot;</bucket>
+            </map>
+            <map to='#b60a1c'>
+              <bucket>&quot;Selected&quot;</bucket>
+            </map>
+            <map to='#bab0ac'>
+              <bucket>&quot;Other&quot;</bucket>
+            </map>
+          </encoding>
+        </style-rule>
+      </style>
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;Reino Unido&quot;' />
+      </semantic-values>
+      <date-options start-of-week='monday' />
+      <datasource-dependencies datasource='Parameters'>
+        <column alias='- Any' caption='Select Permission' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;All&quot;'>
+          <calculation class='tableau' formula='&quot;All&quot;' />
+          <aliases>
+            <alias key='&quot;add_comment&quot;' value='Add Comment' />
+            <alias key='&quot;All&quot;' value='- Any' />
+            <alias key='&quot;change_hierarchy&quot;' value='Move' />
+            <alias key='&quot;change_permissions&quot;' value='Set Permissions' />
+            <alias key='&quot;connect&quot;' value='Connect' />
+            <alias key='&quot;delete&quot;' value='Delete' />
+            <alias key='&quot;export_data&quot;' value='Download Data' />
+            <alias key='&quot;export_image&quot;' value='Download Image' />
+            <alias key='&quot;export_xml&quot;' value='Download / Save As' />
+            <alias key='&quot;filter&quot;' value='Filter' />
+            <alias key='&quot;read&quot;' value='View' />
+            <alias key='&quot;share_view&quot;' value='Share View' />
+            <alias key='&quot;view_comments&quot;' value='View Comments' />
+            <alias key='&quot;vud&quot;' value='Download Full Data' />
+            <alias key='&quot;web_authoring&quot;' value='Web Edit' />
+            <alias key='&quot;write&quot;' value='Save' />
+          </aliases>
+        </column>
+        <column caption='Object Type' datatype='string' name='[Parameter 3]' param-domain-type='list' role='measure' type='nominal' value='&quot;Datasource&quot;'>
+          <calculation class='tableau' formula='&quot;Datasource&quot;' />
+        </column>
+      </datasource-dependencies>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='Sheet 1'>
+      <table>
+        <view>
+          <datasources />
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+          </pane>
+        </panes>
+        <rows />
+        <cols />
+      </table>
+    </worksheet>
+  </worksheets>
+  <windows source-height='30'>
+    <window class='worksheet' maximized='true' name='Sheet 1'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <highlight>
+          <color-one-way>
+            <field>[Tableau Monitoring - Permissions].[none:Calculation_689332262958235648:nk]</field>
+            <field>[Tableau Monitoring - Permissions].[none:licensing_role:nk]</field>
+            <field>[Tableau Monitoring - Permissions].[none:username:nk]</field>
+          </color-one-way>
+        </highlight>
+        <default-map-tool-selection tool='2' />
+      </viewpoint>
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Sheet 1' width='192'>
+      iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAACXBIWXMAAA7DAAAOwwHHb6hk
+      AAACFUlEQVR4nO3TMQEAIAzAMMC/5yFjRxMFfXpnZg5Eve0A2GQA0gxAmgFIMwBpBiDNAKQZ
+      gDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFI
+      MwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQD
+      kGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBp
+      BiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA
+      0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDN
+      AKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxA
+      mgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZ
+      gDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFI
+      MwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKR9Y+0F
+      fBUOM1sAAAAASUVORK5CYII=
+    </thumbnail>
+  </thumbnails>
+</workbook>

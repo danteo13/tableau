@@ -1,0 +1,2411 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 10300.17.1003.0840                               -->
+<workbook source-build='10.3.4 (10300.17.1003.0840)' source-platform='win' version='10.3' xml:base='http://tableau.intra-apps.com' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <repository-location derived-from='https://tableau.intra-apps.com/workbooks/TableauServerMonitor?rev=1.8' id='TableauMonitoring-Audit-WorkbooksUsageDashboard' path='/workbooks' revision='1.1' />
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <style>
+    <style-rule element='worksheet'>
+      <format attr='color' value='#1b1b1b' />
+      <format attr='font-family' value='Tableau Regular' />
+    </style-rule>
+    <style-rule element='title'>
+      <format attr='color' value='#000000' />
+      <format attr='font-size' value='10' />
+      <format attr='font-family' value='Tableau Medium' />
+    </style-rule>
+    <style-rule element='story-title'>
+      <format attr='font-size' value='16' />
+      <format attr='font-family' value='Tableau Semibold' />
+      <format attr='color' value='#ffffff' />
+    </style-rule>
+  </style>
+  <datasources>
+    <datasource hasconnection='false' inline='true' name='Parameters' version='10.3'>
+      <aliases enabled='yes' />
+      <column caption='Select Users' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Exclude BI&quot;'>
+        <calculation class='tableau' formula='&quot;Exclude BI&quot;' />
+        <members>
+          <member value='&quot;All Users&quot;' />
+          <member value='&quot;Exclude BI&quot;' />
+          <member value='&quot;Exclude Me&quot;' />
+        </members>
+      </column>
+      <column caption='Workbooks' datatype='string' name='[Parameter 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;All Workbooks&quot;'>
+        <calculation class='tableau' formula='&quot;All Workbooks&quot;' />
+        <members>
+          <member value='&quot;All Workbooks&quot;' />
+          <member value='&quot;Published By Me&quot;' />
+        </members>
+      </column>
+    </datasource>
+    <datasource caption='Tableau Monitoring - Workbooks &amp; Data Sources' inline='true' name='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny' version='10.3'>
+      <repository-location id='TableauMonitoring-WorkbooksDataSources' path='/datasources' revision='1.6' />
+      <connection channel='http' class='sqlproxy' dbname='TableauMonitoring-WorkbooksDataSources' directory='/dataserver' port='443' server='tableau.intra-apps.com' server-ds-friendly-name='Tableau Monitoring - Workbooks &amp; Data Sources' server-oauth='' username='' workgroup-auth-mode='prompt'>
+        <relation name='sqlproxy' table='[sqlproxy]' type='table' />
+        <calculations>
+          <calculation column='[Calculation_1007398973617766403]' formula='COUNTD([object_id])' />
+          <calculation column='[Calculation_1007398973617840132]' formula='COUNTD([user_name])' />
+          <calculation column='[Calculation_3446661121548431361]' formula='{FIXED [object_id]: MAX([viewed_at])}' />
+          <calculation column='[Calculation_3446661121548578818]' formula='DATETRUNC(&apos;day&apos;, TODAY()) - DATETRUNC(&apos;day&apos;,[Calculation_3446661121548431361])' />
+          <calculation column='[Calculation_3592746634455330816]' formula='COUNTD([event_id])' />
+          <calculation column='[Number of Records]' formula='1' />
+        </calculations>
+        <metadata-records>
+          <metadata-record class='measure'>
+            <remote-name>Calculation_1007398973617766403</remote-name>
+            <remote-type>-1</remote-type>
+            <local-name>[Calculation_1007398973617766403]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>Calculation_1007398973617766403</remote-alias>
+            <ordinal>28</ordinal>
+            <layered>true</layered>
+            <caption># Objects</caption>
+            <local-type>integer</local-type>
+            <aggregation>User</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>0</attribute>
+              <attribute datatype='string' name='formula'>&quot;COUNTD([object_id])&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='measure'>
+            <remote-name>Calculation_1007398973617840132</remote-name>
+            <remote-type>-1</remote-type>
+            <local-name>[Calculation_1007398973617840132]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>Calculation_1007398973617840132</remote-alias>
+            <ordinal>29</ordinal>
+            <layered>true</layered>
+            <caption># Unique Users</caption>
+            <local-type>integer</local-type>
+            <aggregation>User</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>0</attribute>
+              <attribute datatype='string' name='formula'>&quot;COUNTD([user_name])&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Calculation_3446661121548431361</remote-name>
+            <remote-type>-1</remote-type>
+            <local-name>[Calculation_3446661121548431361]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>Calculation_3446661121548431361</remote-alias>
+            <ordinal>30</ordinal>
+            <layered>true</layered>
+            <caption>Last Viewed per Workbook</caption>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>1</attribute>
+              <attribute datatype='string' name='formula'>&quot;{FIXED [object_id]: MAX([viewed_at])}&quot;</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Calculation_3446661121548578818</remote-name>
+            <remote-type>-1</remote-type>
+            <local-name>[Calculation_3446661121548578818]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>Calculation_3446661121548578818</remote-alias>
+            <ordinal>31</ordinal>
+            <layered>true</layered>
+            <caption>Days Since Last View</caption>
+            <local-type>real</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>1</attribute>
+              <attribute datatype='string' name='formula'>&quot;DATETRUNC(&apos;day&apos;, TODAY()) - DATETRUNC(&apos;day&apos;,[Calculation_3446661121548431361])&quot;</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+              <attribute datatype='boolean' name='transient-data'>true</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='measure'>
+            <remote-name>Calculation_3592746634455330816</remote-name>
+            <remote-type>-1</remote-type>
+            <local-name>[Calculation_3592746634455330816]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>Calculation_3592746634455330816</remote-alias>
+            <ordinal>32</ordinal>
+            <layered>true</layered>
+            <caption># Views</caption>
+            <local-type>integer</local-type>
+            <aggregation>User</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>0</attribute>
+              <attribute datatype='string' name='formula'>&quot;COUNTD([event_id])&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='measure'>
+            <remote-name>Number of Records</remote-name>
+            <remote-type>16</remote-type>
+            <local-name>[Number of Records]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>Number of Records</remote-alias>
+            <ordinal>33</ordinal>
+            <layered>true</layered>
+            <caption>Number of Records</caption>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>0</attribute>
+              <attribute datatype='string' name='formula'>&quot;1&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_datasource_name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[conn_datasource_name]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>conn_datasource_name</remote-alias>
+            <ordinal>1</ordinal>
+            <layered>true</layered>
+            <caption>Connection Datasource Name</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_db_class</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[conn_db_class]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>conn_db_class</remote-alias>
+            <ordinal>2</ordinal>
+            <layered>true</layered>
+            <caption>Connection DB Class</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>128</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_has_extract</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[conn_has_extract]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>conn_has_extract</remote-alias>
+            <ordinal>3</ordinal>
+            <layered>true</layered>
+            <caption>Connection Has Extract</caption>
+            <family>events</family>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_repository_url</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[conn_repository_url]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>conn_repository_url</remote-alias>
+            <ordinal>4</ordinal>
+            <layered>true</layered>
+            <caption>Connection Repository URL</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_username</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[conn_username]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>conn_username</remote-alias>
+            <ordinal>5</ordinal>
+            <layered>true</layered>
+            <caption>Connection User Name</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>128</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>event_id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[event_id]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>event_id</remote-alias>
+            <ordinal>6</ordinal>
+            <layered>true</layered>
+            <caption>Event ID</caption>
+            <family>events</family>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>1</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>event_worker</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[event_worker]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>event_worker</remote-alias>
+            <ordinal>7</ordinal>
+            <layered>true</layered>
+            <caption>Tableau Worker</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>friendly_owner_name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[friendly_owner_name]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>friendly_owner_name</remote-alias>
+            <ordinal>8</ordinal>
+            <layered>true</layered>
+            <caption>Owner Friendly Name</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>friendly_user_name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[friendly_user_name]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>friendly_user_name</remote-alias>
+            <ordinal>9</ordinal>
+            <layered>true</layered>
+            <caption>User Friendly Name</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>hist_project_name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[hist_project_name]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>hist_project_name</remote-alias>
+            <ordinal>10</ordinal>
+            <layered>true</layered>
+            <caption>Project (hist)</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>is_active</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[is_active]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>is_active</remote-alias>
+            <ordinal>11</ordinal>
+            <layered>true</layered>
+            <caption>T/F Is Active</caption>
+            <family>events</family>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_created_at</remote-name>
+            <remote-type>135</remote-type>
+            <local-name>[object_created_at]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>object_created_at</remote-alias>
+            <ordinal>12</ordinal>
+            <layered>true</layered>
+            <caption>Date Created</caption>
+            <family>events</family>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>1</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_description</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[object_description]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>object_description</remote-alias>
+            <ordinal>13</ordinal>
+            <layered>true</layered>
+            <caption>Object Description</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[object_id]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>object_id</remote-alias>
+            <ordinal>14</ordinal>
+            <layered>true</layered>
+            <caption>Object ID</caption>
+            <family>events</family>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>1</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[object_name]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>object_name</remote-alias>
+            <ordinal>15</ordinal>
+            <layered>true</layered>
+            <caption>Object Name</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>8190</width>
+            <contains-null>false</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_type</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[object_type]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>object_type</remote-alias>
+            <ordinal>16</ordinal>
+            <layered>true</layered>
+            <caption>Workbook / Data Source</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>8190</width>
+            <contains-null>false</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_updated_at</remote-name>
+            <remote-type>135</remote-type>
+            <local-name>[object_updated_at]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>object_updated_at</remote-alias>
+            <ordinal>17</ordinal>
+            <layered>true</layered>
+            <caption>Date Updated</caption>
+            <family>events</family>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>1</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_url</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[object_url]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>object_url</remote-alias>
+            <ordinal>18</ordinal>
+            <layered>true</layered>
+            <caption>Object URL</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>8190</width>
+            <contains-null>false</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>owner_name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[owner_name]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>owner_name</remote-alias>
+            <ordinal>19</ordinal>
+            <layered>true</layered>
+            <caption>Owner User Name</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>project_name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[project_name]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>project_name</remote-alias>
+            <ordinal>20</ordinal>
+            <layered>true</layered>
+            <caption>Project</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>site_name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[site_name]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>site_name</remote-alias>
+            <ordinal>21</ordinal>
+            <layered>true</layered>
+            <caption>Tableau Site</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>user_is_active</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[user_is_active]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>user_is_active</remote-alias>
+            <ordinal>22</ordinal>
+            <layered>true</layered>
+            <caption>T/F User is Active</caption>
+            <family>events</family>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>false</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>user_is_part_of_bi</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[user_is_part_of_bi]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>user_is_part_of_bi</remote-alias>
+            <ordinal>23</ordinal>
+            <layered>true</layered>
+            <caption>T/F User is Part of BI</caption>
+            <family>events</family>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>user_name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[user_name]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>user_name</remote-alias>
+            <ordinal>24</ordinal>
+            <layered>true</layered>
+            <caption>User Name</caption>
+            <family>events</family>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='integer' name='field-type'>2</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>viewed_at</remote-name>
+            <remote-type>135</remote-type>
+            <local-name>[viewed_at]</local-name>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias>viewed_at</remote-alias>
+            <ordinal>25</ordinal>
+            <layered>true</layered>
+            <caption>Viewed Date</caption>
+            <family>events</family>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='field-type'>1</attribute>
+              <attribute datatype='integer' name='role'>0</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[sqlproxy]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='boolean' name='CAP_64BIT_CALCULATIONS'>true</attribute>
+              <attribute datatype='boolean' name='CAP_CREATE_TEMP_TABLES'>true</attribute>
+              <attribute datatype='boolean' name='CAP_QUERY_BLENDING_ALWAYS_USE_LOCAL_MAPPING_TABLES'>false</attribute>
+              <attribute datatype='boolean' name='CAP_QUERY_BLENDING_PREFER_LOCAL_MAPPING_TABLES'>true</attribute>
+              <attribute datatype='boolean' name='CAP_QUERY_BLENDING_REMOTE_MAPPING_TABLES'>true</attribute>
+              <attribute datatype='boolean' name='CAP_QUERY_EXTRACT_RANGES'>true</attribute>
+              <attribute datatype='boolean' name='CAP_QUERY_SORT_BY'>true</attribute>
+              <attribute datatype='boolean' name='CAP_QUERY_SUBQUERIES'>true</attribute>
+              <attribute datatype='boolean' name='CAP_QUERY_SUBQUERY_QUERY_CONTEXT'>true</attribute>
+              <attribute datatype='boolean' name='CAP_QUERY_SUPPORTS_LODJOINS'>true</attribute>
+              <attribute datatype='boolean' name='CAP_QUERY_USE_QUERY_FUSION'>false</attribute>
+              <attribute datatype='boolean' name='CAP_SUPPORTS_SPLIT_FROM_LEFT'>true</attribute>
+              <attribute datatype='boolean' name='CAP_SUPPORTS_SPLIT_FROM_RIGHT'>true</attribute>
+              <attribute datatype='integer' name='charset'>0</attribute>
+              <attribute datatype='string' name='collation'>&quot;binary&quot;</attribute>
+              <attribute datatype='string' name='datasource'>&quot;&lt;?xml version=&apos;1.0&apos; encoding=&apos;utf-8&apos; ?&gt;&#10;&#10;&lt;datasource :source-version=&apos;10.3&apos; formatted-name=&apos;repoItem271565089024129702&apos; inline=&apos;true&apos; version=&apos;10.3&apos; xmlns:user=&apos;http://www.tableausoftware.com/xml/user&apos;&gt;&#10;  &lt;repository-location id=&apos;TableauMonitoring-WorkbooksDataSources&apos; path=&apos;/datasources&apos; revision=&apos;1.6&apos; /&gt;&#10;  &lt;connection channel=&apos;http&apos; class=&apos;sqlproxy&apos; dbname=&apos;TableauMonitoring-WorkbooksDataSources&apos; directory=&apos;/dataserver&apos; port=&apos;443&apos; server=&apos;tableau.intra-apps.com&apos;&gt;&#10;    &lt;relation name=&apos;sqlproxy&apos; table=&apos;[sqlproxy]&apos; type=&apos;table&apos; /&gt;&#10;    &lt;cols&gt;&#10;      &lt;map key=&apos;[Calculation_1007398973617766403]&apos; value=&apos;[sqlproxy].[Calculation_1007398973617766403]&apos; /&gt;&#10;      &lt;map key=&apos;[Calculation_1007398973617840132]&apos; value=&apos;[sqlproxy].[Calculation_1007398973617840132]&apos; /&gt;&#10;      &lt;map key=&apos;[Calculation_3446661121548431361]&apos; value=&apos;[sqlproxy].[Calculation_3446661121548431361]&apos; /&gt;&#10;      &lt;map key=&apos;[Calculation_3446661121548578818]&apos; value=&apos;[sqlproxy].[Calculation_3446661121548578818]&apos; /&gt;&#10;      &lt;map key=&apos;[Calculation_3592746634455330816]&apos; value=&apos;[sqlproxy].[Calculation_3592746634455330816]&apos; /&gt;&#10;      &lt;map key=&apos;[Number of Records]&apos; value=&apos;[sqlproxy].[Number of Records]&apos; /&gt;&#10;      &lt;map key=&apos;[conn_datasource_name]&apos; value=&apos;[sqlproxy].[conn_datasource_name]&apos; /&gt;&#10;      &lt;map key=&apos;[conn_db_class]&apos; value=&apos;[sqlproxy].[conn_db_class]&apos; /&gt;&#10;      &lt;map key=&apos;[conn_has_extract]&apos; value=&apos;[sqlproxy].[conn_has_extract]&apos; /&gt;&#10;      &lt;map key=&apos;[conn_repository_url]&apos; value=&apos;[sqlproxy].[conn_repository_url]&apos; /&gt;&#10;      &lt;map key=&apos;[conn_username]&apos; value=&apos;[sqlproxy].[conn_username]&apos; /&gt;&#10;      &lt;map key=&apos;[event_id]&apos; value=&apos;[sqlproxy].[event_id]&apos; /&gt;&#10;      &lt;map key=&apos;[event_worker]&apos; value=&apos;[sqlproxy].[event_worker]&apos; /&gt;&#10;      &lt;map key=&apos;[friendly_owner_name]&apos; value=&apos;[sqlproxy].[friendly_owner_name]&apos; /&gt;&#10;      &lt;map key=&apos;[friendly_user_name]&apos; value=&apos;[sqlproxy].[friendly_user_name]&apos; /&gt;&#10;      &lt;map key=&apos;[hist_project_name]&apos; value=&apos;[sqlproxy].[hist_project_name]&apos; /&gt;&#10;      &lt;map key=&apos;[is_active]&apos; value=&apos;[sqlproxy].[is_active]&apos; /&gt;&#10;      &lt;map key=&apos;[object_created_at]&apos; value=&apos;[sqlproxy].[object_created_at]&apos; /&gt;&#10;      &lt;map key=&apos;[object_description]&apos; value=&apos;[sqlproxy].[object_description]&apos; /&gt;&#10;      &lt;map key=&apos;[object_id]&apos; value=&apos;[sqlproxy].[object_id]&apos; /&gt;&#10;      &lt;map key=&apos;[object_name]&apos; value=&apos;[sqlproxy].[object_name]&apos; /&gt;&#10;      &lt;map key=&apos;[object_type]&apos; value=&apos;[sqlproxy].[object_type]&apos; /&gt;&#10;      &lt;map key=&apos;[object_updated_at]&apos; value=&apos;[sqlproxy].[object_updated_at]&apos; /&gt;&#10;      &lt;map key=&apos;[object_url]&apos; value=&apos;[sqlproxy].[object_url]&apos; /&gt;&#10;      &lt;map key=&apos;[owner_name]&apos; value=&apos;[sqlproxy].[owner_name]&apos; /&gt;&#10;      &lt;map key=&apos;[project_name]&apos; value=&apos;[sqlproxy].[project_name]&apos; /&gt;&#10;      &lt;map key=&apos;[site_name]&apos; value=&apos;[sqlproxy].[site_name]&apos; /&gt;&#10;      &lt;map key=&apos;[user_is_active]&apos; value=&apos;[sqlproxy].[user_is_active]&apos; /&gt;&#10;      &lt;map key=&apos;[user_is_part_of_bi]&apos; value=&apos;[sqlproxy].[user_is_part_of_bi]&apos; /&gt;&#10;      &lt;map key=&apos;[user_name]&apos; value=&apos;[sqlproxy].[user_name]&apos; /&gt;&#10;      &lt;map key=&apos;[viewed_at]&apos; value=&apos;[sqlproxy].[viewed_at]&apos; /&gt;&#10;    &lt;/cols&gt;&#10;  &lt;/connection&gt;&#10;  &lt;aliases enabled=&apos;yes&apos; /&gt;&#10;  &lt;column aggregation=&apos;User&apos; caption=&apos;\# Objects&apos; datatype=&apos;integer&apos; default-type=&apos;quantitative&apos; name=&apos;[Calculation_1007398973617766403]&apos; pivot=&apos;key&apos; role=&apos;measure&apos; type=&apos;quantitative&apos; user-datatype=&apos;integer&apos; visual-totals=&apos;Default&apos;&gt;&#10;    &lt;calculation class=&apos;tableau&apos; formula=&apos;COUNTD([object_id])&apos; /&gt;&#10;  &lt;/column&gt;&#10;  &lt;column aggregation=&apos;User&apos; caption=&apos;\# Unique Users&apos; datatype=&apos;integer&apos; default-type=&apos;quantitative&apos; name=&apos;[Calculation_1007398973617840132]&apos; pivot=&apos;key&apos; role=&apos;measure&apos; type=&apos;quantitative&apos; user-datatype=&apos;integer&apos; visual-totals=&apos;Default&apos;&gt;&#10;    &lt;calculation class=&apos;tableau&apos; formula=&apos;COUNTD([user_name])&apos; /&gt;&#10;  &lt;/column&gt;&#10;  &lt;column aggregation=&apos;Year&apos; caption=&apos;Last Viewed per Workbook&apos; datatype=&apos;datetime&apos; default-type=&apos;ordinal&apos; name=&apos;[Calculation_3446661121548431361]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;ordinal&apos; user-datatype=&apos;datetime&apos; visual-totals=&apos;Default&apos;&gt;&#10;    &lt;calculation class=&apos;tableau&apos; formula=&apos;{FIXED [object_id]: MAX([viewed_at])}&apos; /&gt;&#10;  &lt;/column&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Days Since Last View&apos; datatype=&apos;real&apos; default-type=&apos;ordinal&apos; name=&apos;[Calculation_3446661121548578818]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;ordinal&apos; user-datatype=&apos;real&apos; visual-totals=&apos;Default&apos;&gt;&#10;    &lt;calculation class=&apos;tableau&apos; formula=&apos;DATETRUNC(&amp;apos;day&amp;apos;, TODAY()) - DATETRUNC(&amp;apos;day&amp;apos;,[Calculation_3446661121548431361])&apos; /&gt;&#10;  &lt;/column&gt;&#10;  &lt;column aggregation=&apos;User&apos; caption=&apos;\# Views&apos; datatype=&apos;integer&apos; default-type=&apos;quantitative&apos; name=&apos;[Calculation_3592746634455330816]&apos; pivot=&apos;key&apos; role=&apos;measure&apos; type=&apos;quantitative&apos; user-datatype=&apos;integer&apos; visual-totals=&apos;Default&apos;&gt;&#10;    &lt;calculation class=&apos;tableau&apos; formula=&apos;COUNTD([event_id])&apos; /&gt;&#10;  &lt;/column&gt;&#10;  &lt;column aggregation=&apos;Sum&apos; datatype=&apos;integer&apos; default-type=&apos;quantitative&apos; name=&apos;[Number of Records]&apos; pivot=&apos;key&apos; role=&apos;measure&apos; type=&apos;quantitative&apos; user-datatype=&apos;integer&apos; user:auto-column=&apos;numrec&apos; visual-totals=&apos;Default&apos;&gt;&#10;    &lt;calculation class=&apos;tableau&apos; formula=&apos;1&apos; /&gt;&#10;  &lt;/column&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Connection Datasource Name&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[conn_datasource_name]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Connection DB Class&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[conn_db_class]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Connection Has Extract&apos; datatype=&apos;boolean&apos; default-type=&apos;nominal&apos; name=&apos;[conn_has_extract]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;boolean&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Connection Repository URL&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[conn_repository_url]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Connection User Name&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[conn_username]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Sum&apos; caption=&apos;Event ID&apos; datatype=&apos;integer&apos; default-type=&apos;ordinal&apos; name=&apos;[event_id]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;ordinal&apos; user-datatype=&apos;integer&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Tableau Worker&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[event_worker]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Owner Friendly Name&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[friendly_owner_name]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;User Friendly Name&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[friendly_user_name]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Project (hist)&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[hist_project_name]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;T/F Is Active&apos; datatype=&apos;boolean&apos; default-type=&apos;nominal&apos; name=&apos;[is_active]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;boolean&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Year&apos; caption=&apos;Date Created&apos; datatype=&apos;datetime&apos; default-type=&apos;ordinal&apos; name=&apos;[object_created_at]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;ordinal&apos; user-datatype=&apos;datetime&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Object Description&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[object_description]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Sum&apos; caption=&apos;Object ID&apos; datatype=&apos;integer&apos; default-type=&apos;ordinal&apos; name=&apos;[object_id]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;ordinal&apos; user-datatype=&apos;integer&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Object Name&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[object_name]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Workbook / Data Source&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[object_type]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Year&apos; caption=&apos;Date Updated&apos; datatype=&apos;datetime&apos; default-type=&apos;ordinal&apos; name=&apos;[object_updated_at]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;ordinal&apos; user-datatype=&apos;datetime&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Object URL&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[object_url]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Owner User Name&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[owner_name]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Project&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[project_name]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;Tableau Site&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[site_name]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;T/F User is Active&apos; datatype=&apos;boolean&apos; default-type=&apos;nominal&apos; name=&apos;[user_is_active]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;boolean&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;T/F User is Part of BI&apos; datatype=&apos;boolean&apos; default-type=&apos;nominal&apos; name=&apos;[user_is_part_of_bi]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;boolean&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Count&apos; caption=&apos;User Name&apos; datatype=&apos;string&apos; default-type=&apos;nominal&apos; name=&apos;[user_name]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;nominal&apos; user-datatype=&apos;string&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;column aggregation=&apos;Year&apos; caption=&apos;Viewed Date&apos; datatype=&apos;datetime&apos; default-type=&apos;ordinal&apos; name=&apos;[viewed_at]&apos; pivot=&apos;key&apos; role=&apos;dimension&apos; type=&apos;ordinal&apos; user-datatype=&apos;datetime&apos; visual-totals=&apos;Default&apos; /&gt;&#10;  &lt;folder name=&apos;connections&apos; role=&apos;dimensions&apos;&gt;&#10;    &lt;folder-item name=&apos;[conn_datasource_name]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[conn_db_class]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[conn_has_extract]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[conn_repository_url]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[conn_username]&apos; type=&apos;field&apos; /&gt;&#10;  &lt;/folder&gt;&#10;  &lt;folder name=&apos;objects&apos; role=&apos;dimensions&apos;&gt;&#10;    &lt;folder-item name=&apos;[friendly_owner_name]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[is_active]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[object_created_at]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[object_description]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[object_id]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[object_name]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[object_type]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[object_updated_at]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[object_url]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[owner_name]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[project_name]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[site_name]&apos; type=&apos;field&apos; /&gt;&#10;  &lt;/folder&gt;&#10;  &lt;folder name=&apos;users&apos; role=&apos;dimensions&apos;&gt;&#10;    &lt;folder-item name=&apos;[friendly_user_name]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[user_is_active]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[user_is_part_of_bi]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[user_name]&apos; type=&apos;field&apos; /&gt;&#10;  &lt;/folder&gt;&#10;  &lt;folder name=&apos;view events&apos; role=&apos;dimensions&apos;&gt;&#10;    &lt;folder-item name=&apos;[event_id]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[event_worker]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[hist_project_name]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[viewed_at]&apos; type=&apos;field&apos; /&gt;&#10;  &lt;/folder&gt;&#10;  &lt;folder name=&apos;views&apos; role=&apos;dimensions&apos;&gt;&#10;    &lt;folder-item name=&apos;[Calculation_3446661121548431361]&apos; type=&apos;field&apos; /&gt;&#10;    &lt;folder-item name=&apos;[Calculation_3446661121548578818]&apos; type=&apos;field&apos; /&gt;&#10;  &lt;/folder&gt;&#10;  &lt;layout dim-ordering=&apos;alphabetic&apos; dim-percentage=&apos;0.809353&apos; measure-ordering=&apos;alphabetic&apos; measure-percentage=&apos;0.190647&apos; show-structure=&apos;false&apos; user-set-layout=&apos;true&apos; /&gt;&#10;  &lt;semantic-values&gt;&#10;    &lt;semantic-value key=&apos;[Country].[Name]&apos; value=&apos;&amp;quot;Reino Unido&amp;quot;&apos; /&gt;&#10;  &lt;/semantic-values&gt;&#10;  &lt;date-options start-of-week=&apos;monday&apos; /&gt;&#10;&lt;/datasource&gt;&#10;&quot;</attribute>
+              <attribute datatype='string' name='dialect-definition'>&quot;&lt;dialect-definition&gt;&#10;  &lt;primary-dialect class=&apos;dataengine&apos; version=&apos;0.0.0&apos;&gt;&#10;  &lt;/primary-dialect&gt;&#10;&lt;/dialect-definition&gt;&#10;&quot;</attribute>
+              <attribute datatype='boolean' name='extract-active'>true</attribute>
+              <attribute datatype='boolean' name='fast-get-server-time'>true</attribute>
+              <attribute datatype='string' name='update-time'>&quot;3/15/2018 5:14:22 PM&quot;</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <overridable-settings>
+        <date-options fiscal-year-start='january' start-of-week='monday' />
+        <default-date-format />
+      </overridable-settings>
+      <aliases enabled='yes' />
+      <column aggregation='User' caption='# Objects' datatype='integer' default-type='quantitative' layered='true' name='[Calculation_1007398973617766403]' pivot='key' role='measure' type='quantitative' user-datatype='integer' visual-totals='Default'>
+        <calculation class='tableau' formula='COUNTD([object_id])' />
+      </column>
+      <column aggregation='User' caption='# Unique Users' datatype='integer' default-type='quantitative' layered='true' name='[Calculation_1007398973617840132]' pivot='key' role='measure' type='quantitative' user-datatype='integer' visual-totals='Default'>
+        <calculation class='tableau' formula='COUNTD([user_name])' />
+      </column>
+      <column caption='Filter - Select Users' datatype='integer' name='[Calculation_209135947607408641]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='If [Parameters].[Parameter 1] = &apos;All Users&apos; THEN 1&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude BI&apos; THEN INT(NOT [user_is_part_of_bi])&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude Me&apos; THEN INT(USERNAME() != [user_name])&#13;&#10;END' />
+      </column>
+      <column caption='Filter - Workbook' datatype='boolean' name='[Calculation_209135947612803074]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IIF([Parameters].[Parameter 2] = &apos;All Workbooks&apos;, TRUE, USERNAME() = [owner_name])' />
+      </column>
+      <column aggregation='Year' caption='Last Viewed per Workbook' datatype='datetime' default-type='ordinal' layered='true' name='[Calculation_3446661121548431361]' pivot='key' role='dimension' type='ordinal' user-datatype='datetime' visual-totals='Default'>
+        <calculation class='tableau' formula='{FIXED [object_id]: MAX([viewed_at])}' />
+      </column>
+      <column aggregation='Count' caption='Days Since Last View' datatype='real' default-type='ordinal' layered='true' name='[Calculation_3446661121548578818]' pivot='key' role='dimension' type='ordinal' user-datatype='real' visual-totals='Default'>
+        <calculation class='tableau' formula='DATETRUNC(&apos;day&apos;, TODAY()) - DATETRUNC(&apos;day&apos;,[Calculation_3446661121548431361])' />
+      </column>
+      <column aggregation='User' caption='# Views' datatype='integer' default-type='quantitative' layered='true' name='[Calculation_3592746634455330816]' pivot='key' role='measure' type='quantitative' user-datatype='integer' visual-totals='Default'>
+        <calculation class='tableau' formula='COUNTD([event_id])' />
+      </column>
+      <column caption='# Unique Workbooks' datatype='integer' name='[Calculation_572801614585696256]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='COUNTD([Workbook Id])' />
+      </column>
+      <column caption='Ranking' datatype='integer' name='[Calculation_572801614587260929]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='RANK_UNIQUE(SUM([Number of Records]))'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column caption='Calculation1' datatype='boolean' name='[Calculation_572801614587371522]' role='measure' type='nominal'>
+        <calculation class='tableau' formula='[Calculation_572801614587260929] &lt;= 10'>
+          <table-calc ordering-type='Rows' />
+        </calculation>
+      </column>
+      <column caption='Filter - splayer' datatype='boolean' name='[Calculation_972496082229497856]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='[user_name] = &apos;splayer&apos;' />
+      </column>
+      <column aggregation='Sum' datatype='integer' default-type='quantitative' layered='true' name='[Number of Records]' pivot='key' role='measure' type='quantitative' user-datatype='integer' user:auto-column='numrec' visual-totals='Default'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column aggregation='Count' caption='Connection Datasource Name' datatype='string' default-type='nominal' layered='true' name='[conn_datasource_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='Connection DB Class' datatype='string' default-type='nominal' layered='true' name='[conn_db_class]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='Connection Has Extract' datatype='boolean' default-type='nominal' layered='true' name='[conn_has_extract]' pivot='key' role='dimension' type='nominal' user-datatype='boolean' visual-totals='Default' />
+      <column aggregation='Count' caption='Connection Repository URL' datatype='string' default-type='nominal' layered='true' name='[conn_repository_url]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='Connection User Name' datatype='string' default-type='nominal' layered='true' name='[conn_username]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Sum' caption='Event ID' datatype='integer' default-type='ordinal' layered='true' name='[event_id]' pivot='key' role='dimension' type='ordinal' user-datatype='integer' visual-totals='Default' />
+      <column aggregation='Count' caption='Tableau Worker' datatype='string' default-type='nominal' layered='true' name='[event_worker]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='Owner Friendly Name' datatype='string' default-type='nominal' layered='true' name='[friendly_owner_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='User Friendly Name' datatype='string' default-type='nominal' layered='true' name='[friendly_user_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='Project (hist)' datatype='string' default-type='nominal' layered='true' name='[hist_project_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='T/F Is Active' datatype='boolean' default-type='nominal' layered='true' name='[is_active]' pivot='key' role='dimension' type='nominal' user-datatype='boolean' visual-totals='Default' />
+      <column caption='Product (from project)' datatype='string' name='[name (projects) - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[federated.0llq2sv18hbrch16tquxp0jkdxft].[name (projects)]'>
+        <calculation class='tableau' formula='TRIM( SPLIT( [project_name], &quot;-&quot;, 1 ) )' />
+      </column>
+      <column aggregation='Year' caption='Date Created' datatype='datetime' default-type='ordinal' layered='true' name='[object_created_at]' pivot='key' role='dimension' type='ordinal' user-datatype='datetime' visual-totals='Default' />
+      <column aggregation='Count' caption='Object Description' datatype='string' default-type='nominal' layered='true' name='[object_description]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Sum' caption='Object ID' datatype='integer' default-type='ordinal' layered='true' name='[object_id]' pivot='key' role='dimension' type='ordinal' user-datatype='integer' visual-totals='Default' />
+      <column aggregation='Count' caption='Object Name' datatype='string' default-type='nominal' layered='true' name='[object_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='Workbook / Data Source' datatype='string' default-type='nominal' layered='true' name='[object_type]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Year' caption='Date Updated' datatype='datetime' default-type='ordinal' layered='true' name='[object_updated_at]' pivot='key' role='dimension' type='ordinal' user-datatype='datetime' visual-totals='Default' />
+      <column aggregation='Count' caption='Object URL' datatype='string' default-type='nominal' layered='true' name='[object_url]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='Owner User Name' datatype='string' default-type='nominal' layered='true' name='[owner_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='Project' datatype='string' default-type='nominal' layered='true' name='[project_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='Tableau Site' datatype='string' default-type='nominal' layered='true' name='[site_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Count' caption='T/F User is Active' datatype='boolean' default-type='nominal' layered='true' name='[user_is_active]' pivot='key' role='dimension' type='nominal' user-datatype='boolean' visual-totals='Default' />
+      <column aggregation='Count' caption='T/F User is Part of BI' datatype='boolean' default-type='nominal' layered='true' name='[user_is_part_of_bi]' pivot='key' role='dimension' type='nominal' user-datatype='boolean' visual-totals='Default' />
+      <column aggregation='Count' caption='User Name' datatype='string' default-type='nominal' layered='true' name='[user_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      <column aggregation='Year' caption='Viewed Date' datatype='datetime' default-type='ordinal' layered='true' name='[viewed_at]' pivot='key' role='dimension' type='ordinal' user-datatype='datetime' visual-totals='Default' />
+      <column-instance column='[viewed_at]' derivation='Day-Trunc' name='[tdy:viewed_at:ok]' pivot='key' type='ordinal' />
+      <column-instance column='[viewed_at]' derivation='Month-Trunc' name='[tmn:viewed_at:ok]' pivot='key' type='ordinal' />
+      <group caption='Action (MONTH(Created At),DAY(Created At))' hidden='true' name='[Action (MONTH(Created At),DAY(Created At))]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[tmn:viewed_at:ok]' />
+          <groupfilter function='level-members' level='[tdy:viewed_at:ok]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (MONTH(Event Date),DAY(Event Date))' hidden='true' name='[Action (MONTH(Event Date),DAY(Event Date))]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[tmn:viewed_at:ok]' />
+          <groupfilter function='level-members' level='[tdy:viewed_at:ok]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (Name (Hist Users))' hidden='true' name='[Action (Name (Hist Users))]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[Name (Hist Users)]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (Name (Hist Workbooks))' hidden='true' name='[Action (Name (Hist Workbooks))]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[Name (Hist Workbooks)]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (Object Name)' hidden='true' name='[Action (Object Name)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[object_name]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (User Name)' hidden='true' name='[Action (User Name)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[user_name]' />
+        </groupfilter>
+      </group>
+      <group caption='Action (Workbook Name)' hidden='true' name='[Action (Workbook Name)]' name-style='unqualified' user:auto-column='sheet_link'>
+        <groupfilter function='crossjoin'>
+          <groupfilter function='level-members' level='[Workbook Name]' />
+        </groupfilter>
+      </group>
+      <folder layered='true' name='connections' role='dimensions'>
+        <folder-item name='[conn_datasource_name]' type='field' />
+        <folder-item name='[conn_db_class]' type='field' />
+        <folder-item name='[conn_has_extract]' type='field' />
+        <folder-item name='[conn_repository_url]' type='field' />
+        <folder-item name='[conn_username]' type='field' />
+      </folder>
+      <folder layered='true' name='objects' role='dimensions'>
+        <folder-item name='[friendly_owner_name]' type='field' />
+        <folder-item name='[is_active]' type='field' />
+        <folder-item name='[object_created_at]' type='field' />
+        <folder-item name='[object_description]' type='field' />
+        <folder-item name='[object_id]' type='field' />
+        <folder-item name='[object_name]' type='field' />
+        <folder-item name='[object_type]' type='field' />
+        <folder-item name='[object_updated_at]' type='field' />
+        <folder-item name='[object_url]' type='field' />
+        <folder-item name='[owner_name]' type='field' />
+        <folder-item name='[project_name]' type='field' />
+        <folder-item name='[site_name]' type='field' />
+      </folder>
+      <folder layered='true' name='users' role='dimensions'>
+        <folder-item name='[friendly_user_name]' type='field' />
+        <folder-item name='[user_is_active]' type='field' />
+        <folder-item name='[user_is_part_of_bi]' type='field' />
+        <folder-item name='[user_name]' type='field' />
+      </folder>
+      <folder layered='true' name='view events' role='dimensions'>
+        <folder-item name='[event_id]' type='field' />
+        <folder-item name='[event_worker]' type='field' />
+        <folder-item name='[hist_project_name]' type='field' />
+        <folder-item name='[viewed_at]' type='field' />
+      </folder>
+      <folder layered='true' name='views' role='dimensions'>
+        <folder-item name='[Calculation_3446661121548431361]' type='field' />
+        <folder-item name='[Calculation_3446661121548578818]' type='field' />
+      </folder>
+      <layout dim-ordering='alphabetic' dim-percentage='0.683135' measure-ordering='alphabetic' measure-percentage='0.088586' parameter-percentage='0.228279' show-structure='false' user-set-layout='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;Reino Unido&quot;' />
+      </semantic-values>
+      <datasource-dependencies datasource='Parameters'>
+        <column caption='Select Users' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Exclude BI&quot;'>
+          <calculation class='tableau' formula='&quot;Exclude BI&quot;' />
+        </column>
+        <column caption='Workbooks' datatype='string' name='[Parameter 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;All Workbooks&quot;'>
+          <calculation class='tableau' formula='&quot;All Workbooks&quot;' />
+        </column>
+      </datasource-dependencies>
+    </datasource>
+  </datasources>
+  <shared-views>
+    <shared-view name='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny'>
+      <datasources>
+        <datasource caption='Tableau Monitoring - Workbooks &amp; Data Sources' name='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny' />
+      </datasources>
+      <datasource-dependencies datasource='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny'>
+        <column caption='Filter - Select Users' datatype='integer' name='[Calculation_209135947607408641]' role='dimension' type='ordinal'>
+          <calculation class='tableau' formula='If [Parameters].[Parameter 1] = &apos;All Users&apos; THEN 1&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude BI&apos; THEN INT(NOT [user_is_part_of_bi])&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude Me&apos; THEN INT(USERNAME() != [user_name])&#13;&#10;END' />
+        </column>
+        <column caption='Filter - Workbook' datatype='boolean' name='[Calculation_209135947612803074]' role='dimension' type='nominal'>
+          <calculation class='tableau' formula='IIF([Parameters].[Parameter 2] = &apos;All Workbooks&apos;, TRUE, USERNAME() = [owner_name])' />
+        </column>
+        <column caption='Filter - splayer' datatype='boolean' name='[Calculation_972496082229497856]' role='dimension' type='nominal'>
+          <calculation class='tableau' formula='[user_name] = &apos;splayer&apos;' />
+        </column>
+        <column caption='Product (from project)' datatype='string' name='[name (projects) - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[federated.0llq2sv18hbrch16tquxp0jkdxft].[name (projects)]'>
+          <calculation class='tableau' formula='TRIM( SPLIT( [project_name], &quot;-&quot;, 1 ) )' />
+        </column>
+        <column-instance column='[Calculation_209135947607408641]' derivation='None' name='[none:Calculation_209135947607408641:ok]' pivot='key' type='ordinal' />
+        <column-instance column='[Calculation_209135947612803074]' derivation='None' name='[none:Calculation_209135947612803074:nk]' pivot='key' type='nominal' />
+        <column-instance column='[Calculation_972496082229497856]' derivation='None' name='[none:Calculation_972496082229497856:nk]' pivot='key' type='nominal' />
+        <column-instance column='[name (projects) - Split 1]' derivation='None' name='[none:name (projects) - Split 1:nk]' pivot='key' type='nominal' />
+        <column-instance column='[object_type]' derivation='None' name='[none:object_type:nk]' pivot='key' type='nominal' />
+        <column-instance column='[project_name]' derivation='None' name='[none:project_name:nk]' pivot='key' type='nominal' />
+        <column aggregation='Count' caption='Workbook / Data Source' datatype='string' default-type='nominal' layered='true' name='[object_type]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+        <column aggregation='Count' caption='Project' datatype='string' default-type='nominal' layered='true' name='[project_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      </datasource-dependencies>
+      <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947607408641:ok]'>
+        <groupfilter function='member' level='[none:Calculation_209135947607408641:ok]' member='1' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+      </filter>
+      <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947612803074:nk]'>
+        <groupfilter function='member' level='[none:Calculation_209135947612803074:nk]' member='true' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+      </filter>
+      <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_972496082229497856:nk]'>
+        <groupfilter function='member' level='[none:Calculation_972496082229497856:nk]' member='false' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+      </filter>
+      <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:name (projects) - Split 1:nk]'>
+        <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
+          <groupfilter function='member' level='[none:name (projects) - Split 1:nk]' member='%null%' />
+          <groupfilter from='&quot;Casino&quot;' function='range' level='[none:name (projects) - Split 1:nk]' to='&quot;WebAnalytics&quot;' />
+        </groupfilter>
+      </filter>
+      <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_type:nk]' context='true'>
+        <groupfilter function='member' level='[none:object_type:nk]' member='&quot;Workbooks&quot;' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+      </filter>
+      <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:project_name:nk]'>
+        <groupfilter function='level-members' level='[none:project_name:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+      </filter>
+    </shared-view>
+  </shared-views>
+  <actions>
+    <action caption='Filter1' name='[Action1]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard='Daily Usage Report' type='sheet'>
+        <exclude-sheet name='Top 10 Users' />
+        <exclude-sheet name='Top 10 Workbooks' />
+      </source>
+      <command command='tsc:tsl-filter'>
+        <param name='exclude' value='# Workbooks,#Users,#Views' />
+        <param name='special-fields' value='all' />
+        <param name='target' value='Daily Usage Report' />
+      </command>
+    </action>
+    <action caption='Highlight1' name='[Action2]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard='Daily Usage Report' type='sheet'>
+        <exclude-sheet name='Top 10 Users' />
+        <exclude-sheet name='Top 10 Workbooks' />
+      </source>
+      <command command='tsc:brush'>
+        <param name='exclude' value='Top 10 Users,Top 10 Workbooks' />
+        <param name='special-fields' value='all' />
+        <param name='target' value='Daily Usage Report' />
+      </command>
+    </action>
+    <action caption='Filter2' name='[Action3]'>
+      <activation auto-clear='true' type='on-select' />
+      <source dashboard='Daily Usage Report' type='sheet'>
+        <exclude-sheet name='# Workbooks' />
+        <exclude-sheet name='#Users' />
+        <exclude-sheet name='#Views' />
+      </source>
+      <command command='tsc:tsl-filter'>
+        <param name='special-fields' value='all' />
+        <param name='target' value='Daily Usage Report' />
+      </command>
+    </action>
+  </actions>
+  <worksheets>
+    <worksheet name='# Workbooks'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run fontalignment='1'>&lt;</run>
+            <run fontalignment='1'>Sheet Name</run>
+            <run fontalignment='1'>&gt;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='Tableau Monitoring - Workbooks &amp; Data Sources' name='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny' />
+            <datasource name='Parameters' />
+          </datasources>
+          <datasource-dependencies datasource='Parameters'>
+            <column caption='Select Users' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Exclude BI&quot;'>
+              <calculation class='tableau' formula='&quot;Exclude BI&quot;' />
+            </column>
+            <column caption='Workbooks' datatype='string' name='[Parameter 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;All Workbooks&quot;'>
+              <calculation class='tableau' formula='&quot;All Workbooks&quot;' />
+            </column>
+          </datasource-dependencies>
+          <datasource-dependencies datasource='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny'>
+            <column aggregation='User' caption='# Objects' datatype='integer' default-type='quantitative' layered='true' name='[Calculation_1007398973617766403]' pivot='key' role='measure' type='quantitative' user-datatype='integer' visual-totals='Default'>
+              <calculation class='tableau' formula='COUNTD([object_id])' />
+            </column>
+            <column aggregation='User' caption='# Unique Users' datatype='integer' default-type='quantitative' layered='true' name='[Calculation_1007398973617840132]' pivot='key' role='measure' type='quantitative' user-datatype='integer' visual-totals='Default'>
+              <calculation class='tableau' formula='COUNTD([user_name])' />
+            </column>
+            <column caption='Filter - Select Users' datatype='integer' name='[Calculation_209135947607408641]' role='dimension' type='ordinal'>
+              <calculation class='tableau' formula='If [Parameters].[Parameter 1] = &apos;All Users&apos; THEN 1&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude BI&apos; THEN INT(NOT [user_is_part_of_bi])&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude Me&apos; THEN INT(USERNAME() != [user_name])&#13;&#10;END' />
+            </column>
+            <column caption='Filter - Workbook' datatype='boolean' name='[Calculation_209135947612803074]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='IIF([Parameters].[Parameter 2] = &apos;All Workbooks&apos;, TRUE, USERNAME() = [owner_name])' />
+            </column>
+            <column caption='Filter - splayer' datatype='boolean' name='[Calculation_972496082229497856]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='[user_name] = &apos;splayer&apos;' />
+            </column>
+            <column aggregation='Sum' datatype='integer' default-type='quantitative' layered='true' name='[Number of Records]' pivot='key' role='measure' type='quantitative' user-datatype='integer' user:auto-column='numrec' visual-totals='Default'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column caption='Product (from project)' datatype='string' name='[name (projects) - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[federated.0llq2sv18hbrch16tquxp0jkdxft].[name (projects)]'>
+              <calculation class='tableau' formula='TRIM( SPLIT( [project_name], &quot;-&quot;, 1 ) )' />
+            </column>
+            <column-instance column='[Calculation_209135947607408641]' derivation='None' name='[none:Calculation_209135947607408641:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Calculation_209135947612803074]' derivation='None' name='[none:Calculation_209135947612803074:nk]' pivot='key' type='nominal' />
+            <column-instance column='[Calculation_972496082229497856]' derivation='None' name='[none:Calculation_972496082229497856:nk]' pivot='key' type='nominal' />
+            <column-instance column='[name (projects) - Split 1]' derivation='None' name='[none:name (projects) - Split 1:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_name]' derivation='None' name='[none:object_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_type]' derivation='None' name='[none:object_type:nk]' pivot='key' type='nominal' />
+            <column-instance column='[project_name]' derivation='None' name='[none:project_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[user_name]' derivation='None' name='[none:user_name:nk]' pivot='key' type='nominal' />
+            <column aggregation='Sum' caption='Object ID' datatype='integer' default-type='ordinal' layered='true' name='[object_id]' pivot='key' role='dimension' type='ordinal' user-datatype='integer' visual-totals='Default' />
+            <column aggregation='Count' caption='Object Name' datatype='string' default-type='nominal' layered='true' name='[object_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Workbook / Data Source' datatype='string' default-type='nominal' layered='true' name='[object_type]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Owner User Name' datatype='string' default-type='nominal' layered='true' name='[owner_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Project' datatype='string' default-type='nominal' layered='true' name='[project_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[viewed_at]' derivation='Day-Trunc' name='[tdy:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[viewed_at]' derivation='Month-Trunc' name='[tmn:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column aggregation='Count' caption='T/F User is Part of BI' datatype='boolean' default-type='nominal' layered='true' name='[user_is_part_of_bi]' pivot='key' role='dimension' type='nominal' user-datatype='boolean' visual-totals='Default' />
+            <column aggregation='Count' caption='User Name' datatype='string' default-type='nominal' layered='true' name='[user_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Calculation_1007398973617766403]' derivation='User' name='[usr:Calculation_1007398973617766403:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Calculation_1007398973617840132]' derivation='User' name='[usr:Calculation_1007398973617840132:qk]' pivot='key' type='quantitative' />
+            <column aggregation='Year' caption='Viewed Date' datatype='datetime' default-type='ordinal' layered='true' name='[viewed_at]' pivot='key' role='dimension' type='ordinal' user-datatype='datetime' visual-totals='Default' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (Object Name)]'>
+            <groupfilter function='level-members' level='[object_name]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (User Name)]'>
+            <groupfilter function='level-members' level='[user_name]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' filter-group='3'>
+            <groupfilter function='level-members' level='[none:object_name:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' filter-group='4'>
+            <groupfilter function='level-members' level='[none:user_name:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_type:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947607408641:ok]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947612803074:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:name (projects) - Split 1:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (User Name)]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_972496082229497856:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (Object Name)]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:project_name:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='display' class='0' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617766403:qk]' scope='rows' value='false' />
+          </style-rule>
+          <style-rule element='cell'>
+            <format attr='width' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='10' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='height' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='21' />
+            <format attr='background-color' value='#f5f5f5' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='display' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='false' />
+            <format attr='display' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='true' />
+            <format attr='font-family' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='Tableau Medium' />
+            <format attr='font-size' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='8' />
+            <format attr='text-format' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='*dd mmm yyyy' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
+          </style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='off' />
+          </style-rule>
+          <style-rule element='table-div'>
+            <format attr='line-visibility' scope='rows' value='off' />
+            <format attr='div-level' scope='cols' value='1' />
+            <format attr='line-pattern-only' scope='cols' value='dashed' />
+            <format attr='stroke-color' scope='cols' value='#e6e6e6' />
+            <format attr='line-visibility' scope='cols' value='on' />
+          </style-rule>
+          <style-rule element='title'>
+            <format attr='background-color' value='#ddebf0' />
+            <format attr='border-style' value='solid' />
+            <format attr='border-width' value='1' />
+            <format attr='border-color' value='#ffffff' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane id='1' selection-relaxation-option='selection-relaxation-disallow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Bar' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <encodings>
+              <lod column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617840132:qk]' />
+              <lod column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' />
+              <text column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617766403:qk]' />
+            </encodings>
+            <customized-tooltip>
+              <formatted-text>
+                <run fontcolor='#d40f7d' fontname='Tableau Medium'>&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]&gt;</run>
+                <run fontname='Tableau Semibold' fontsize='9'>&#10;&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]&gt;</run>
+                <run fontname='Tableau Regular' fontsize='9'> Views</run>
+                <run fontname='Tableau Semibold' fontsize='9'>&#10;&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617840132:qk]&gt;</run>
+                <run fontname='Tableau Regular' fontsize='9'> Users</run>
+                <run fontname='Tableau Semibold' fontsize='9'>&#10;&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617766403:qk]&gt; </run>
+                <run fontname='Tableau Regular' fontsize='9'>Workbooks</run>
+              </formatted-text>
+            </customized-tooltip>
+            <style>
+              <style-rule element='datalabel'>
+                <format attr='color-mode' value='user' />
+                <format attr='color' value='#1b1b1b' />
+                <format attr='font-size' value='7' />
+              </style-rule>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='true' />
+                <format attr='mark-labels-cull' value='false' />
+                <format attr='mark-labels-mode' value='range' />
+                <format attr='mark-labels-range-min' value='false' />
+                <format attr='size' value='1.5602209568023682' />
+                <format attr='mark-color' value='#003b5c' />
+                <format attr='has-stroke' value='false' />
+                <format attr='mark-transparency' value='219' />
+              </style-rule>
+              <style-rule element='pane'>
+                <format attr='minheight' value='348' />
+                <format attr='maxheight' value='348' />
+                <format attr='minwidth' value='-1' />
+                <format attr='maxwidth' value='-1' />
+                <format attr='aspect' value='0' />
+                <format attr='minwidth' value='935' />
+                <format attr='maxwidth' value='935' />
+                <format attr='minheight' value='216' />
+                <format attr='maxheight' value='216' />
+                <format attr='aspect' value='0' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617766403:qk]</rows>
+        <cols>([sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok] / [sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok])</cols>
+        <show-full-range>
+          <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[created_at]</column>
+          <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[viewed_at]</column>
+        </show-full-range>
+      </table>
+    </worksheet>
+    <worksheet name='#Users'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run fontalignment='1'>&lt;</run>
+            <run fontalignment='1'>Sheet Name</run>
+            <run fontalignment='1'>&gt;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='Tableau Monitoring - Workbooks &amp; Data Sources' name='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny' />
+            <datasource name='Parameters' />
+          </datasources>
+          <datasource-dependencies datasource='Parameters'>
+            <column caption='Select Users' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Exclude BI&quot;'>
+              <calculation class='tableau' formula='&quot;Exclude BI&quot;' />
+            </column>
+            <column caption='Workbooks' datatype='string' name='[Parameter 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;All Workbooks&quot;'>
+              <calculation class='tableau' formula='&quot;All Workbooks&quot;' />
+            </column>
+          </datasource-dependencies>
+          <datasource-dependencies datasource='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny'>
+            <column aggregation='User' caption='# Objects' datatype='integer' default-type='quantitative' layered='true' name='[Calculation_1007398973617766403]' pivot='key' role='measure' type='quantitative' user-datatype='integer' visual-totals='Default'>
+              <calculation class='tableau' formula='COUNTD([object_id])' />
+            </column>
+            <column aggregation='User' caption='# Unique Users' datatype='integer' default-type='quantitative' layered='true' name='[Calculation_1007398973617840132]' pivot='key' role='measure' type='quantitative' user-datatype='integer' visual-totals='Default'>
+              <calculation class='tableau' formula='COUNTD([user_name])' />
+            </column>
+            <column caption='Filter - Select Users' datatype='integer' name='[Calculation_209135947607408641]' role='dimension' type='ordinal'>
+              <calculation class='tableau' formula='If [Parameters].[Parameter 1] = &apos;All Users&apos; THEN 1&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude BI&apos; THEN INT(NOT [user_is_part_of_bi])&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude Me&apos; THEN INT(USERNAME() != [user_name])&#13;&#10;END' />
+            </column>
+            <column caption='Filter - Workbook' datatype='boolean' name='[Calculation_209135947612803074]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='IIF([Parameters].[Parameter 2] = &apos;All Workbooks&apos;, TRUE, USERNAME() = [owner_name])' />
+            </column>
+            <column caption='Filter - splayer' datatype='boolean' name='[Calculation_972496082229497856]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='[user_name] = &apos;splayer&apos;' />
+            </column>
+            <column aggregation='Sum' datatype='integer' default-type='quantitative' layered='true' name='[Number of Records]' pivot='key' role='measure' type='quantitative' user-datatype='integer' user:auto-column='numrec' visual-totals='Default'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column caption='Product (from project)' datatype='string' name='[name (projects) - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[federated.0llq2sv18hbrch16tquxp0jkdxft].[name (projects)]'>
+              <calculation class='tableau' formula='TRIM( SPLIT( [project_name], &quot;-&quot;, 1 ) )' />
+            </column>
+            <column-instance column='[Calculation_209135947607408641]' derivation='None' name='[none:Calculation_209135947607408641:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Calculation_209135947612803074]' derivation='None' name='[none:Calculation_209135947612803074:nk]' pivot='key' type='nominal' />
+            <column-instance column='[Calculation_972496082229497856]' derivation='None' name='[none:Calculation_972496082229497856:nk]' pivot='key' type='nominal' />
+            <column-instance column='[name (projects) - Split 1]' derivation='None' name='[none:name (projects) - Split 1:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_name]' derivation='None' name='[none:object_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_type]' derivation='None' name='[none:object_type:nk]' pivot='key' type='nominal' />
+            <column-instance column='[project_name]' derivation='None' name='[none:project_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[user_name]' derivation='None' name='[none:user_name:nk]' pivot='key' type='nominal' />
+            <column aggregation='Sum' caption='Object ID' datatype='integer' default-type='ordinal' layered='true' name='[object_id]' pivot='key' role='dimension' type='ordinal' user-datatype='integer' visual-totals='Default' />
+            <column aggregation='Count' caption='Object Name' datatype='string' default-type='nominal' layered='true' name='[object_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Workbook / Data Source' datatype='string' default-type='nominal' layered='true' name='[object_type]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Owner User Name' datatype='string' default-type='nominal' layered='true' name='[owner_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Project' datatype='string' default-type='nominal' layered='true' name='[project_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[viewed_at]' derivation='Day-Trunc' name='[tdy:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[viewed_at]' derivation='Month-Trunc' name='[tmn:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column aggregation='Count' caption='T/F User is Part of BI' datatype='boolean' default-type='nominal' layered='true' name='[user_is_part_of_bi]' pivot='key' role='dimension' type='nominal' user-datatype='boolean' visual-totals='Default' />
+            <column aggregation='Count' caption='User Name' datatype='string' default-type='nominal' layered='true' name='[user_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Calculation_1007398973617766403]' derivation='User' name='[usr:Calculation_1007398973617766403:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Calculation_1007398973617840132]' derivation='User' name='[usr:Calculation_1007398973617840132:qk]' pivot='key' type='quantitative' />
+            <column aggregation='Year' caption='Viewed Date' datatype='datetime' default-type='ordinal' layered='true' name='[viewed_at]' pivot='key' role='dimension' type='ordinal' user-datatype='datetime' visual-totals='Default' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (Object Name)]'>
+            <groupfilter function='level-members' level='[object_name]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (User Name)]'>
+            <groupfilter function='level-members' level='[user_name]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' filter-group='3'>
+            <groupfilter function='level-members' level='[none:object_name:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' filter-group='4'>
+            <groupfilter function='level-members' level='[none:user_name:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_type:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947607408641:ok]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947612803074:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:name (projects) - Split 1:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (User Name)]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_972496082229497856:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (Object Name)]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:project_name:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='display' class='0' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617840132:qk]' scope='rows' value='false' />
+          </style-rule>
+          <style-rule element='cell'>
+            <format attr='width' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='10' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='background-color' value='#f5f5f5' />
+            <format attr='height' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='21' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='display' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='false' />
+            <format attr='display' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='true' />
+            <format attr='font-family' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='Tableau Medium' />
+            <format attr='font-size' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='8' />
+            <format attr='text-format' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='*dd mmm yyyy' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
+          </style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='off' />
+          </style-rule>
+          <style-rule element='table-div'>
+            <format attr='line-visibility' scope='rows' value='off' />
+            <format attr='div-level' scope='cols' value='1' />
+            <format attr='line-pattern-only' scope='cols' value='dashed' />
+            <format attr='stroke-color' scope='cols' value='#e6e6e6' />
+            <format attr='line-visibility' scope='cols' value='on' />
+          </style-rule>
+          <style-rule element='title'>
+            <format attr='background-color' value='#ddebf0' />
+            <format attr='border-width' value='1' />
+            <format attr='border-style' value='solid' />
+            <format attr='border-color' value='#ffffff' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane id='1' selection-relaxation-option='selection-relaxation-disallow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Bar' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <encodings>
+              <lod column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617766403:qk]' />
+              <lod column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' />
+              <text column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617840132:qk]' />
+            </encodings>
+            <customized-tooltip>
+              <formatted-text>
+                <run fontcolor='#d40f7d' fontname='Tableau Medium'>&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]&gt;</run>
+                <run fontname='Tableau Semibold' fontsize='9'>&#10;&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]&gt;</run>
+                <run fontname='Tableau Regular' fontsize='9'> Views</run>
+                <run fontname='Tableau Semibold' fontsize='9'>&#10;&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617840132:qk]&gt;</run>
+                <run fontname='Tableau Regular' fontsize='9'> Users</run>
+                <run fontname='Tableau Semibold' fontsize='9'>&#10;&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617766403:qk]&gt; </run>
+                <run fontname='Tableau Regular' fontsize='9'>Workbooks</run>
+              </formatted-text>
+            </customized-tooltip>
+            <style>
+              <style-rule element='datalabel'>
+                <format attr='color-mode' value='user' />
+                <format attr='color' value='#1b1b1b' />
+                <format attr='font-size' value='7' />
+              </style-rule>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='true' />
+                <format attr='mark-labels-cull' value='false' />
+                <format attr='mark-labels-mode' value='range' />
+                <format attr='mark-labels-range-min' value='false' />
+                <format attr='size' value='1.5602209568023682' />
+                <format attr='mark-color' value='#b4b4b4' />
+                <format attr='mark-transparency' value='255' />
+                <format attr='has-stroke' value='false' />
+              </style-rule>
+              <style-rule element='pane'>
+                <format attr='minheight' value='321' />
+                <format attr='maxheight' value='321' />
+                <format attr='minwidth' value='-1' />
+                <format attr='maxwidth' value='-1' />
+                <format attr='aspect' value='0' />
+                <format attr='minwidth' value='935' />
+                <format attr='maxwidth' value='935' />
+                <format attr='minheight' value='216' />
+                <format attr='maxheight' value='216' />
+                <format attr='aspect' value='0' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617840132:qk]</rows>
+        <cols>([sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok] / [sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok])</cols>
+        <show-full-range>
+          <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[created_at]</column>
+          <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[viewed_at]</column>
+        </show-full-range>
+      </table>
+    </worksheet>
+    <worksheet name='#Views'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run fontalignment='1'>&lt;</run>
+            <run fontalignment='1'>Sheet Name</run>
+            <run fontalignment='1'>&gt;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='Tableau Monitoring - Workbooks &amp; Data Sources' name='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny' />
+            <datasource name='Parameters' />
+          </datasources>
+          <datasource-dependencies datasource='Parameters'>
+            <column caption='Select Users' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Exclude BI&quot;'>
+              <calculation class='tableau' formula='&quot;Exclude BI&quot;' />
+            </column>
+            <column caption='Workbooks' datatype='string' name='[Parameter 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;All Workbooks&quot;'>
+              <calculation class='tableau' formula='&quot;All Workbooks&quot;' />
+            </column>
+          </datasource-dependencies>
+          <datasource-dependencies datasource='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny'>
+            <column aggregation='User' caption='# Objects' datatype='integer' default-type='quantitative' layered='true' name='[Calculation_1007398973617766403]' pivot='key' role='measure' type='quantitative' user-datatype='integer' visual-totals='Default'>
+              <calculation class='tableau' formula='COUNTD([object_id])' />
+            </column>
+            <column aggregation='User' caption='# Unique Users' datatype='integer' default-type='quantitative' layered='true' name='[Calculation_1007398973617840132]' pivot='key' role='measure' type='quantitative' user-datatype='integer' visual-totals='Default'>
+              <calculation class='tableau' formula='COUNTD([user_name])' />
+            </column>
+            <column caption='Filter - Select Users' datatype='integer' name='[Calculation_209135947607408641]' role='dimension' type='ordinal'>
+              <calculation class='tableau' formula='If [Parameters].[Parameter 1] = &apos;All Users&apos; THEN 1&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude BI&apos; THEN INT(NOT [user_is_part_of_bi])&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude Me&apos; THEN INT(USERNAME() != [user_name])&#13;&#10;END' />
+            </column>
+            <column caption='Filter - Workbook' datatype='boolean' name='[Calculation_209135947612803074]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='IIF([Parameters].[Parameter 2] = &apos;All Workbooks&apos;, TRUE, USERNAME() = [owner_name])' />
+            </column>
+            <column caption='Filter - splayer' datatype='boolean' name='[Calculation_972496082229497856]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='[user_name] = &apos;splayer&apos;' />
+            </column>
+            <column aggregation='Sum' datatype='integer' default-type='quantitative' layered='true' name='[Number of Records]' pivot='key' role='measure' type='quantitative' user-datatype='integer' user:auto-column='numrec' visual-totals='Default'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column caption='Product (from project)' datatype='string' name='[name (projects) - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[federated.0llq2sv18hbrch16tquxp0jkdxft].[name (projects)]'>
+              <calculation class='tableau' formula='TRIM( SPLIT( [project_name], &quot;-&quot;, 1 ) )' />
+            </column>
+            <column-instance column='[Calculation_209135947607408641]' derivation='None' name='[none:Calculation_209135947607408641:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Calculation_209135947612803074]' derivation='None' name='[none:Calculation_209135947612803074:nk]' pivot='key' type='nominal' />
+            <column-instance column='[Calculation_972496082229497856]' derivation='None' name='[none:Calculation_972496082229497856:nk]' pivot='key' type='nominal' />
+            <column-instance column='[name (projects) - Split 1]' derivation='None' name='[none:name (projects) - Split 1:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_name]' derivation='None' name='[none:object_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_type]' derivation='None' name='[none:object_type:nk]' pivot='key' type='nominal' />
+            <column-instance column='[project_name]' derivation='None' name='[none:project_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[user_name]' derivation='None' name='[none:user_name:nk]' pivot='key' type='nominal' />
+            <column aggregation='Sum' caption='Object ID' datatype='integer' default-type='ordinal' layered='true' name='[object_id]' pivot='key' role='dimension' type='ordinal' user-datatype='integer' visual-totals='Default' />
+            <column aggregation='Count' caption='Object Name' datatype='string' default-type='nominal' layered='true' name='[object_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Workbook / Data Source' datatype='string' default-type='nominal' layered='true' name='[object_type]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Owner User Name' datatype='string' default-type='nominal' layered='true' name='[owner_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Project' datatype='string' default-type='nominal' layered='true' name='[project_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[viewed_at]' derivation='Day-Trunc' name='[tdy:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[viewed_at]' derivation='Month-Trunc' name='[tmn:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column aggregation='Count' caption='T/F User is Part of BI' datatype='boolean' default-type='nominal' layered='true' name='[user_is_part_of_bi]' pivot='key' role='dimension' type='nominal' user-datatype='boolean' visual-totals='Default' />
+            <column aggregation='Count' caption='User Name' datatype='string' default-type='nominal' layered='true' name='[user_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Calculation_1007398973617766403]' derivation='User' name='[usr:Calculation_1007398973617766403:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Calculation_1007398973617840132]' derivation='User' name='[usr:Calculation_1007398973617840132:qk]' pivot='key' type='quantitative' />
+            <column aggregation='Year' caption='Viewed Date' datatype='datetime' default-type='ordinal' layered='true' name='[viewed_at]' pivot='key' role='dimension' type='ordinal' user-datatype='datetime' visual-totals='Default' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (Object Name)]'>
+            <groupfilter function='level-members' level='[object_name]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (User Name)]'>
+            <groupfilter function='level-members' level='[user_name]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' filter-group='3'>
+            <groupfilter function='level-members' level='[none:object_name:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' filter-group='4'>
+            <groupfilter function='level-members' level='[none:user_name:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_type:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947607408641:ok]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947612803074:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:name (projects) - Split 1:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_972496082229497856:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:project_name:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (User Name)]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (Object Name)]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='display' class='0' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' scope='rows' value='false' />
+          </style-rule>
+          <style-rule element='cell'>
+            <format attr='width' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='8' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='height' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='21' />
+            <format attr='background-color' value='#f5f5f5' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='display' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='false' />
+            <format attr='font-family' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='Tableau Medium' />
+            <format attr='font-size' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='8' />
+            <format attr='text-format' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='*dd mmm yyyy' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
+          </style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='off' />
+          </style-rule>
+          <style-rule element='table-div'>
+            <format attr='line-visibility' scope='rows' value='off' />
+            <format attr='div-level' scope='cols' value='1' />
+            <format attr='line-pattern-only' scope='cols' value='dashed' />
+            <format attr='stroke-color' scope='cols' value='#e6e6e6' />
+            <format attr='line-visibility' scope='cols' value='on' />
+          </style-rule>
+          <style-rule element='title'>
+            <format attr='background-color' value='#ddebf0' />
+            <format attr='border-width' value='1' />
+            <format attr='border-color' value='#ffffff' />
+            <format attr='border-style' value='solid' />
+          </style-rule>
+          <style-rule element='quick-filter-title'>
+            <format attr='font-size' value='8' />
+            <format attr='color' value='#d40f7d' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane id='1' selection-relaxation-option='selection-relaxation-disallow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Bar' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <encodings>
+              <lod column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617840132:qk]' />
+              <lod column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617766403:qk]' />
+              <text column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' />
+            </encodings>
+            <customized-tooltip>
+              <formatted-text>
+                <run fontcolor='#d40f7d' fontname='Tableau Medium'>&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]&gt;</run>
+                <run fontname='Tableau Semibold' fontsize='9'>&#10;&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]&gt;</run>
+                <run fontname='Tableau Regular' fontsize='9'> Views</run>
+                <run fontname='Tableau Semibold' fontsize='9'>&#10;&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617840132:qk]&gt;</run>
+                <run fontname='Tableau Regular' fontsize='9'> Users</run>
+                <run fontname='Tableau Semibold' fontsize='9'>&#10;&lt;[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_1007398973617766403:qk]&gt; </run>
+                <run fontname='Tableau Regular' fontsize='9'>Workbooks</run>
+              </formatted-text>
+            </customized-tooltip>
+            <style>
+              <style-rule element='datalabel'>
+                <format attr='color-mode' value='user' />
+                <format attr='color' value='#1b1b1b' />
+                <format attr='font-size' value='7' />
+              </style-rule>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='true' />
+                <format attr='mark-labels-cull' value='false' />
+                <format attr='mark-labels-mode' value='range' />
+                <format attr='mark-labels-range-min' value='false' />
+                <format attr='size' value='1.5602209568023682' />
+                <format attr='mark-color' value='#75a1c7' />
+                <format attr='mark-transparency' value='255' />
+                <format attr='has-stroke' value='false' />
+              </style-rule>
+              <style-rule element='pane'>
+                <format attr='minheight' value='299' />
+                <format attr='maxheight' value='299' />
+                <format attr='minwidth' value='-1' />
+                <format attr='maxwidth' value='-1' />
+                <format attr='aspect' value='0' />
+                <format attr='minwidth' value='935' />
+                <format attr='maxwidth' value='935' />
+                <format attr='minheight' value='216' />
+                <format attr='maxheight' value='216' />
+                <format attr='aspect' value='0' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]</rows>
+        <cols>([sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok] / [sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok])</cols>
+        <show-full-range>
+          <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[created_at]</column>
+          <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[viewed_at]</column>
+        </show-full-range>
+      </table>
+    </worksheet>
+    <worksheet name='Top 10 Users'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run fontalignment='1'>&lt;</run>
+            <run fontalignment='1'>Sheet Name</run>
+            <run fontalignment='1'>&gt;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='Tableau Monitoring - Workbooks &amp; Data Sources' name='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny' />
+            <datasource name='Parameters' />
+          </datasources>
+          <datasource-dependencies datasource='Parameters'>
+            <column caption='Select Users' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Exclude BI&quot;'>
+              <calculation class='tableau' formula='&quot;Exclude BI&quot;' />
+            </column>
+            <column caption='Workbooks' datatype='string' name='[Parameter 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;All Workbooks&quot;'>
+              <calculation class='tableau' formula='&quot;All Workbooks&quot;' />
+            </column>
+          </datasource-dependencies>
+          <datasource-dependencies datasource='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny'>
+            <column caption='Filter - Select Users' datatype='integer' name='[Calculation_209135947607408641]' role='dimension' type='ordinal'>
+              <calculation class='tableau' formula='If [Parameters].[Parameter 1] = &apos;All Users&apos; THEN 1&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude BI&apos; THEN INT(NOT [user_is_part_of_bi])&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude Me&apos; THEN INT(USERNAME() != [user_name])&#13;&#10;END' />
+            </column>
+            <column caption='Filter - Workbook' datatype='boolean' name='[Calculation_209135947612803074]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='IIF([Parameters].[Parameter 2] = &apos;All Workbooks&apos;, TRUE, USERNAME() = [owner_name])' />
+            </column>
+            <column caption='Ranking' datatype='integer' name='[Calculation_572801614587260929]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='RANK_UNIQUE(SUM([Number of Records]))'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='Calculation1' datatype='boolean' name='[Calculation_572801614587371522]' role='measure' type='nominal'>
+              <calculation class='tableau' formula='[Calculation_572801614587260929] &lt;= 10'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='Filter - splayer' datatype='boolean' name='[Calculation_972496082229497856]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='[user_name] = &apos;splayer&apos;' />
+            </column>
+            <column aggregation='Sum' datatype='integer' default-type='quantitative' layered='true' name='[Number of Records]' pivot='key' role='measure' type='quantitative' user-datatype='integer' user:auto-column='numrec' visual-totals='Default'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column caption='Product (from project)' datatype='string' name='[name (projects) - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[federated.0llq2sv18hbrch16tquxp0jkdxft].[name (projects)]'>
+              <calculation class='tableau' formula='TRIM( SPLIT( [project_name], &quot;-&quot;, 1 ) )' />
+            </column>
+            <column-instance column='[Calculation_209135947607408641]' derivation='None' name='[none:Calculation_209135947607408641:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Calculation_209135947612803074]' derivation='None' name='[none:Calculation_209135947612803074:nk]' pivot='key' type='nominal' />
+            <column-instance column='[Calculation_972496082229497856]' derivation='None' name='[none:Calculation_972496082229497856:nk]' pivot='key' type='nominal' />
+            <column-instance column='[name (projects) - Split 1]' derivation='None' name='[none:name (projects) - Split 1:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_name]' derivation='None' name='[none:object_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_type]' derivation='None' name='[none:object_type:nk]' pivot='key' type='nominal' />
+            <column-instance column='[project_name]' derivation='None' name='[none:project_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[user_name]' derivation='None' name='[none:user_name:nk]' pivot='key' type='nominal' />
+            <column aggregation='Count' caption='Object Name' datatype='string' default-type='nominal' layered='true' name='[object_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Workbook / Data Source' datatype='string' default-type='nominal' layered='true' name='[object_type]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Owner User Name' datatype='string' default-type='nominal' layered='true' name='[owner_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Project' datatype='string' default-type='nominal' layered='true' name='[project_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[viewed_at]' derivation='Day-Trunc' name='[tdy:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[viewed_at]' derivation='Month-Trunc' name='[tmn:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column aggregation='Count' caption='T/F User is Part of BI' datatype='boolean' default-type='nominal' layered='true' name='[user_is_part_of_bi]' pivot='key' role='dimension' type='nominal' user-datatype='boolean' visual-totals='Default' />
+            <column aggregation='Count' caption='User Name' datatype='string' default-type='nominal' layered='true' name='[user_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Calculation_572801614587260929]' derivation='User' name='[usr:Calculation_572801614587260929:qk]' pivot='key' type='quantitative'>
+              <table-calc ordering-type='Columns' />
+            </column-instance>
+            <column-instance column='[Calculation_572801614587371522]' derivation='User' name='[usr:Calculation_572801614587371522:nk:1]' pivot='key' type='nominal'>
+              <table-calc ordering-type='Columns' />
+              <table-calc field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Calculation_572801614587260929]' ordering-type='Columns' />
+            </column-instance>
+            <column aggregation='Year' caption='Viewed Date' datatype='datetime' default-type='ordinal' layered='true' name='[viewed_at]' pivot='key' role='dimension' type='ordinal' user-datatype='datetime' visual-totals='Default' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (MONTH(Created At),DAY(Created At))]'>
+            <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[tmn:viewed_at:ok]' />
+              <groupfilter function='level-members' level='[tdy:viewed_at:ok]' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (MONTH(Event Date),DAY(Event Date))]'>
+            <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[tmn:viewed_at:ok]' />
+              <groupfilter function='level-members' level='[tdy:viewed_at:ok]' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (Object Name)]'>
+            <groupfilter function='level-members' level='[object_name]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' filter-group='3'>
+            <groupfilter function='level-members' level='[none:object_name:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <sort class='computed' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' direction='DESC' using='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' />
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_572801614587371522:nk:1]'>
+            <groupfilter function='member' level='[usr:Calculation_572801614587371522:nk:1]' member='true' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_type:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:name (projects) - Split 1:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947607408641:ok]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947612803074:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_572801614587371522:nk:1]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (MONTH(Created At),DAY(Created At))]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (MONTH(Event Date),DAY(Event Date))]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_972496082229497856:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (Object Name)]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:project_name:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='display' class='0' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' scope='cols' value='false' />
+          </style-rule>
+          <style-rule element='cell'>
+            <format attr='width' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='6' />
+            <format attr='height' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' value='32' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='height' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='21' />
+            <format attr='width' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' value='124' />
+            <format attr='background-color' value='#f5f5f5' />
+            <format attr='background-color' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' value='#ffffff' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='display' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='false' />
+            <format attr='display' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='true' />
+            <format attr='font-family' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='Tableau Medium' />
+            <format attr='font-size' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='8' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='display-field-labels' scope='rows' value='false' />
+          </style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='off' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='table-div'>
+            <format attr='line-visibility' scope='rows' value='off' />
+            <format attr='div-level' scope='cols' value='1' />
+            <format attr='line-pattern-only' scope='cols' value='dashed' />
+            <format attr='stroke-color' scope='cols' value='#e6e6e6' />
+            <format attr='line-visibility' scope='cols' value='on' />
+          </style-rule>
+          <style-rule element='title'>
+            <format attr='border-style' value='solid' />
+            <format attr='border-width' value='1' />
+            <format attr='border-color' value='#ffffff' />
+            <format attr='background-color' value='#e6e6e6' />
+          </style-rule>
+          <style-rule element='quick-filter'>
+            <format attr='title' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' value='Select a specific workbook:'>
+              <formatted-text>
+                <run fontsize='10'>Select a specific workbook:</run>
+              </formatted-text>
+            </format>
+          </style-rule>
+        </style>
+        <panes>
+          <pane id='1' selection-relaxation-option='selection-relaxation-disallow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Bar' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <encodings>
+              <lod column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_572801614587260929:qk]' />
+              <text column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' />
+            </encodings>
+            <style>
+              <style-rule element='datalabel'>
+                <format attr='color-mode' value='user' />
+                <format attr='color' value='#1b1b1b' />
+                <format attr='font-size' value='7' />
+              </style-rule>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='true' />
+                <format attr='mark-labels-range-min' value='false' />
+                <format attr='size' value='1.5602209568023682' />
+                <format attr='mark-labels-cull' value='true' />
+                <format attr='mark-labels-mode' value='all' />
+                <format attr='mark-color' value='#b4b4b4' />
+                <format attr='has-stroke' value='false' />
+                <format attr='mark-transparency' value='219' />
+              </style-rule>
+              <style-rule element='pane'>
+                <format attr='minheight' value='-1' />
+                <format attr='maxheight' value='-1' />
+                <format attr='minwidth' value='297' />
+                <format attr='maxwidth' value='297' />
+                <format attr='aspect' value='0' />
+                <format attr='minwidth' value='935' />
+                <format attr='maxwidth' value='935' />
+                <format attr='minheight' value='216' />
+                <format attr='maxheight' value='216' />
+                <format attr='aspect' value='0' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]</rows>
+        <cols>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]</cols>
+        <show-full-range>
+          <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[created_at]</column>
+        </show-full-range>
+        <tooltip-style tooltip-mode='none' />
+      </table>
+    </worksheet>
+    <worksheet name='Top 10 Workbooks'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run fontalignment='1'>&lt;</run>
+            <run fontalignment='1'>Sheet Name</run>
+            <run fontalignment='1'>&gt;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='Tableau Monitoring - Workbooks &amp; Data Sources' name='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny' />
+            <datasource name='Parameters' />
+          </datasources>
+          <datasource-dependencies datasource='Parameters'>
+            <column caption='Select Users' datatype='string' name='[Parameter 1]' param-domain-type='list' role='measure' type='nominal' value='&quot;Exclude BI&quot;'>
+              <calculation class='tableau' formula='&quot;Exclude BI&quot;' />
+            </column>
+            <column caption='Workbooks' datatype='string' name='[Parameter 2]' param-domain-type='list' role='measure' type='nominal' value='&quot;All Workbooks&quot;'>
+              <calculation class='tableau' formula='&quot;All Workbooks&quot;' />
+            </column>
+          </datasource-dependencies>
+          <datasource-dependencies datasource='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny'>
+            <column caption='Filter - Select Users' datatype='integer' name='[Calculation_209135947607408641]' role='dimension' type='ordinal'>
+              <calculation class='tableau' formula='If [Parameters].[Parameter 1] = &apos;All Users&apos; THEN 1&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude BI&apos; THEN INT(NOT [user_is_part_of_bi])&#13;&#10;Elseif [Parameters].[Parameter 1] = &apos;Exclude Me&apos; THEN INT(USERNAME() != [user_name])&#13;&#10;END' />
+            </column>
+            <column caption='Filter - Workbook' datatype='boolean' name='[Calculation_209135947612803074]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='IIF([Parameters].[Parameter 2] = &apos;All Workbooks&apos;, TRUE, USERNAME() = [owner_name])' />
+            </column>
+            <column caption='Ranking' datatype='integer' name='[Calculation_572801614587260929]' role='measure' type='quantitative'>
+              <calculation class='tableau' formula='RANK_UNIQUE(SUM([Number of Records]))'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='Calculation1' datatype='boolean' name='[Calculation_572801614587371522]' role='measure' type='nominal'>
+              <calculation class='tableau' formula='[Calculation_572801614587260929] &lt;= 10'>
+                <table-calc ordering-type='Rows' />
+              </calculation>
+            </column>
+            <column caption='Filter - splayer' datatype='boolean' name='[Calculation_972496082229497856]' role='dimension' type='nominal'>
+              <calculation class='tableau' formula='[user_name] = &apos;splayer&apos;' />
+            </column>
+            <column aggregation='Sum' datatype='integer' default-type='quantitative' layered='true' name='[Number of Records]' pivot='key' role='measure' type='quantitative' user-datatype='integer' user:auto-column='numrec' visual-totals='Default'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column caption='Product (from project)' datatype='string' name='[name (projects) - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[federated.0llq2sv18hbrch16tquxp0jkdxft].[name (projects)]'>
+              <calculation class='tableau' formula='TRIM( SPLIT( [project_name], &quot;-&quot;, 1 ) )' />
+            </column>
+            <column-instance column='[Calculation_209135947607408641]' derivation='None' name='[none:Calculation_209135947607408641:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[Calculation_209135947612803074]' derivation='None' name='[none:Calculation_209135947612803074:nk]' pivot='key' type='nominal' />
+            <column-instance column='[Calculation_972496082229497856]' derivation='None' name='[none:Calculation_972496082229497856:nk]' pivot='key' type='nominal' />
+            <column-instance column='[name (projects) - Split 1]' derivation='None' name='[none:name (projects) - Split 1:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_name]' derivation='None' name='[none:object_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[object_type]' derivation='None' name='[none:object_type:nk]' pivot='key' type='nominal' />
+            <column-instance column='[project_name]' derivation='None' name='[none:project_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[user_name]' derivation='None' name='[none:user_name:nk]' pivot='key' type='nominal' />
+            <column aggregation='Count' caption='Object Name' datatype='string' default-type='nominal' layered='true' name='[object_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Workbook / Data Source' datatype='string' default-type='nominal' layered='true' name='[object_type]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Owner User Name' datatype='string' default-type='nominal' layered='true' name='[owner_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column aggregation='Count' caption='Project' datatype='string' default-type='nominal' layered='true' name='[project_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[viewed_at]' derivation='Day-Trunc' name='[tdy:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column-instance column='[viewed_at]' derivation='Month-Trunc' name='[tmn:viewed_at:ok]' pivot='key' type='ordinal' />
+            <column aggregation='Count' caption='T/F User is Part of BI' datatype='boolean' default-type='nominal' layered='true' name='[user_is_part_of_bi]' pivot='key' role='dimension' type='nominal' user-datatype='boolean' visual-totals='Default' />
+            <column aggregation='Count' caption='User Name' datatype='string' default-type='nominal' layered='true' name='[user_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+            <column-instance column='[Calculation_572801614587260929]' derivation='User' name='[usr:Calculation_572801614587260929:qk]' pivot='key' type='quantitative'>
+              <table-calc ordering-type='Columns' />
+            </column-instance>
+            <column-instance column='[Calculation_572801614587371522]' derivation='User' name='[usr:Calculation_572801614587371522:nk:1]' pivot='key' type='nominal'>
+              <table-calc ordering-type='Columns' />
+              <table-calc field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Calculation_572801614587260929]' ordering-type='Columns' />
+            </column-instance>
+            <column aggregation='Year' caption='Viewed Date' datatype='datetime' default-type='ordinal' layered='true' name='[viewed_at]' pivot='key' role='dimension' type='ordinal' user-datatype='datetime' visual-totals='Default' />
+          </datasource-dependencies>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (MONTH(Created At),DAY(Created At))]'>
+            <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[tmn:viewed_at:ok]' />
+              <groupfilter function='level-members' level='[tdy:viewed_at:ok]' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (MONTH(Event Date),DAY(Event Date))]'>
+            <groupfilter function='crossjoin' user:ui-enumeration='all' user:ui-marker='enumerate'>
+              <groupfilter function='level-members' level='[tmn:viewed_at:ok]' />
+              <groupfilter function='level-members' level='[tdy:viewed_at:ok]' />
+            </groupfilter>
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (User Name)]'>
+            <groupfilter function='level-members' level='[user_name]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <sort class='computed' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' direction='DESC' using='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' />
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' filter-group='4'>
+            <groupfilter function='level-members' level='[none:user_name:nk]' user:ui-enumeration='all' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_572801614587371522:nk:1]'>
+            <groupfilter function='member' level='[usr:Calculation_572801614587371522:nk:1]' member='true' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_type:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_572801614587371522:nk:1]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (MONTH(Created At),DAY(Created At))]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947607408641:ok]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_209135947612803074:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:name (projects) - Split 1:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (MONTH(Event Date),DAY(Event Date))]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[Action (User Name)]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:Calculation_972496082229497856:nk]</column>
+            <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:project_name:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='display' class='0' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' scope='cols' value='false' />
+          </style-rule>
+          <style-rule element='cell'>
+            <format attr='width' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='6' />
+            <format attr='height' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' value='44' />
+          </style-rule>
+          <style-rule element='header'>
+            <format attr='height' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='21' />
+            <format attr='width' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' value='124' />
+            <format attr='background-color' value='#f5f5f5' />
+            <format attr='background-color' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' value='#ffffff' />
+          </style-rule>
+          <style-rule element='label'>
+            <format attr='display' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tdy:viewed_at:ok]' value='false' />
+            <format attr='display' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='true' />
+            <format attr='font-family' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='Tableau Medium' />
+            <format attr='font-size' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[tmn:viewed_at:ok]' value='8' />
+            <format attr='color' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' value='#000000' />
+            <format attr='font-size' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' value='7' />
+            <format attr='font-family' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' value='Tableau Regular' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
+            <format attr='display-field-labels' scope='rows' value='false' />
+          </style-rule>
+          <style-rule element='gridline'>
+            <format attr='line-visibility' scope='rows' value='off' />
+            <format attr='line-visibility' scope='cols' value='off' />
+          </style-rule>
+          <style-rule element='table-div'>
+            <format attr='line-visibility' scope='rows' value='off' />
+            <format attr='div-level' scope='cols' value='1' />
+            <format attr='line-pattern-only' scope='cols' value='dashed' />
+            <format attr='stroke-color' scope='cols' value='#e6e6e6' />
+            <format attr='line-visibility' scope='cols' value='on' />
+          </style-rule>
+          <style-rule element='title'>
+            <format attr='border-style' value='solid' />
+            <format attr='border-width' value='1' />
+            <format attr='background-color' value='#e6e6e6' />
+            <format attr='border-color' value='#ffffff' />
+          </style-rule>
+          <style-rule element='quick-filter'>
+            <format attr='title' field='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' value='Select a specific user:' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane id='1' selection-relaxation-option='selection-relaxation-disallow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Bar' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <encodings>
+              <lod column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[usr:Calculation_572801614587260929:qk]' />
+              <text column='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]' />
+            </encodings>
+            <style>
+              <style-rule element='datalabel'>
+                <format attr='color-mode' value='user' />
+                <format attr='color' value='#1b1b1b' />
+                <format attr='font-size' value='7' />
+              </style-rule>
+              <style-rule element='mark'>
+                <format attr='mark-labels-show' value='true' />
+                <format attr='mark-labels-range-min' value='false' />
+                <format attr='size' value='1.5602209568023682' />
+                <format attr='mark-labels-cull' value='true' />
+                <format attr='mark-labels-mode' value='all' />
+                <format attr='mark-color' value='#003b5c' />
+                <format attr='has-stroke' value='false' />
+                <format attr='mark-transparency' value='219' />
+              </style-rule>
+              <style-rule element='pane'>
+                <format attr='minheight' value='-1' />
+                <format attr='maxheight' value='-1' />
+                <format attr='minwidth' value='297' />
+                <format attr='maxwidth' value='297' />
+                <format attr='aspect' value='0' />
+                <format attr='minwidth' value='935' />
+                <format attr='maxwidth' value='935' />
+                <format attr='minheight' value='216' />
+                <format attr='maxheight' value='216' />
+                <format attr='aspect' value='0' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]</rows>
+        <cols>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[sum:Number of Records:qk]</cols>
+        <show-full-range>
+          <column>[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[created_at]</column>
+        </show-full-range>
+        <tooltip-style tooltip-mode='none' />
+      </table>
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name='Daily Usage Report'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run fontname='Tableau Bold' fontsize='16'>&lt;</run>
+            <run fontname='Tableau Bold' fontsize='16'>Workbook Name</run>
+            <run fontname='Tableau Bold' fontsize='16'>&gt;</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <repository-location id='DailyUsageReport' path='/workbooks/TableauMonitoring-Audit-WorkbooksUsageDashboard' revision='' />
+      <style>
+        <style-rule element='dash-title'>
+          <format attr='background-color' value='#003b5c' />
+          <format attr='color' value='#ffffff' />
+          <format attr='text-align' value='center' />
+          <format attr='font-family' value='Tableau Semibold' />
+          <format attr='font-size' value='14' />
+        </style-rule>
+        <style-rule element='parameter-ctrl-title'>
+          <format attr='font-size' value='8' />
+          <format attr='color' value='#003b5c' />
+        </style-rule>
+      </style>
+      <size minheight='768' minwidth='1200' sizing-mode='range' />
+      <datasources>
+        <datasource caption='Tableau Monitoring - Workbooks &amp; Data Sources' name='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny' />
+      </datasources>
+      <datasource-dependencies datasource='sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny'>
+        <column caption='Product (from project)' datatype='string' name='[name (projects) - Split 1]' role='dimension' type='nominal' user:SplitFieldIndex='1' user:SplitFieldOrigin='[federated.0llq2sv18hbrch16tquxp0jkdxft].[name (projects)]'>
+          <calculation class='tableau' formula='TRIM( SPLIT( [project_name], &quot;-&quot;, 1 ) )' />
+        </column>
+        <column-instance column='[name (projects) - Split 1]' derivation='None' name='[none:name (projects) - Split 1:nk]' pivot='key' type='nominal' />
+        <column-instance column='[object_name]' derivation='None' name='[none:object_name:nk]' pivot='key' type='nominal' />
+        <column-instance column='[project_name]' derivation='None' name='[none:project_name:nk]' pivot='key' type='nominal' />
+        <column-instance column='[user_name]' derivation='None' name='[none:user_name:nk]' pivot='key' type='nominal' />
+        <column aggregation='Count' caption='Object Name' datatype='string' default-type='nominal' layered='true' name='[object_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+        <column aggregation='Count' caption='Project' datatype='string' default-type='nominal' layered='true' name='[project_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+        <column aggregation='Count' caption='User Name' datatype='string' default-type='nominal' layered='true' name='[user_name]' pivot='key' role='dimension' type='nominal' user-datatype='string' visual-totals='Default' />
+      </datasource-dependencies>
+      <zones>
+        <zone h='100000' id='2' type='layout-basic' w='100000' x='0' y='0'>
+          <zone h='100000' id='32' param='horz' type='layout-flow' w='100000' x='0' y='0'>
+            <zone fixed-size='4' h='100000' id='22' is-fixed='true' type='empty' w='1008' x='0' y='0' />
+            <zone h='100000' id='30' param='vert' type='layout-flow' w='97984' x='1008' y='0'>
+              <zone fixed-size='4' h='1696' id='36' is-fixed='true' type='empty' w='97984' x='1008' y='0' />
+              <zone fixed-size='36' h='4662' id='10' is-fixed='true' type='title' w='97984' x='1008' y='1696' />
+              <zone h='5403' id='39' param='horz' type='layout-flow' w='97984' x='1008' y='6358'>
+                <zone fixed-size='175' h='5403' id='40' is-fixed='true' mode='compact' param='[Parameters].[Parameter 1]' type='paramctrl' w='11510' x='1008' y='6358' />
+                <zone fixed-size='175' h='5403' id='42' is-fixed='true' mode='compact' param='[Parameters].[Parameter 2]' type='paramctrl' w='11510' x='12518' y='6358' />
+                <zone h='5403' id='43' mode='checkdropdown' name='#Views' param='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:name (projects) - Split 1:nk]' show-apply='true' type='filter' values='relevant' w='10567' x='24028' y='6358' />
+                <zone h='5403' id='46' mode='checkdropdown' name='#Views' param='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:project_name:nk]' show-apply='true' type='filter' values='relevant' w='10567' x='34595' y='6358' />
+                <zone h='5403' id='41' type='empty' w='53830' x='45162' y='6358' />
+              </zone>
+              <zone h='86543' id='24' param='horz' type='layout-flow' w='97984' x='1008' y='11761'>
+                <zone h='86543' id='18' param='vert' type='layout-flow' w='74964' x='1008' y='11761'>
+                  <zone h='28211' id='1' name='#Views' w='74964' x='1008' y='11761'>
+                    <layout-cache has-max-size-h='true' maxheight='348' minheight='348' type-h='scalable' type-w='cell' />
+                  </zone>
+                  <zone fixed-size='1' h='954' id='37' is-fixed='true' type='empty' w='74964' x='1008' y='39972' />
+                  <zone h='28211' id='12' name='#Users' w='74964' x='1008' y='40926'>
+                    <layout-cache has-max-size-h='true' maxheight='370' minheight='370' type-h='scalable' type-w='cell' />
+                  </zone>
+                  <zone fixed-size='1' h='954' id='38' is-fixed='true' type='empty' w='74964' x='1008' y='69137' />
+                  <zone h='28213' id='16' name='# Workbooks' w='74964' x='1008' y='70091'>
+                    <layout-cache has-max-size-h='true' maxheight='397' minheight='397' type-h='scalable' type-w='cell' />
+                  </zone>
+                </zone>
+                <zone fixed-size='8' h='86543' id='20' is-fixed='true' type='empty' w='1007' x='75972' y='11761' />
+                <zone fixed-size='350' h='86543' id='28' is-fixed='true' param='vert' type='layout-flow' w='22013' x='76979' y='11761'>
+                  <zone h='5615' id='44' mode='dropdown' name='Top 10 Users' param='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:object_name:nk]' type='filter' w='22013' x='76979' y='11761' />
+                  <zone h='37708' id='29' name='Top 10 Users' w='22013' x='76979' y='17376'>
+                    <layout-cache cell-count-h='10' has-max-size-w='true' maxwidth='423' minwidth='423' non-cell-size-h='27' type-h='cell' type-w='scalable' />
+                  </zone>
+                  <zone h='5509' id='45' mode='dropdown' name='Top 10 Workbooks' param='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:user_name:nk]' type='filter' w='22013' x='76979' y='55084' />
+                  <zone h='37708' id='25' name='Top 10 Workbooks' w='22013' x='76979' y='60593'>
+                    <layout-cache cell-count-h='10' has-max-size-w='true' maxwidth='423' minwidth='423' non-cell-size-h='27' type-h='cell' type-w='scalable' />
+                  </zone>
+                </zone>
+              </zone>
+              <zone fixed-size='4' h='1696' id='21' is-fixed='true' type='empty' w='97984' x='1008' y='98304' />
+            </zone>
+            <zone fixed-size='4' h='100000' id='35' is-fixed='true' type='empty' w='1008' x='98992' y='0' />
+          </zone>
+        </zone>
+      </zones>
+    </dashboard>
+  </dashboards>
+  <windows source-height='30'>
+    <window class='dashboard' maximized='true' name='Daily Usage Report'>
+      <viewpoints>
+        <viewpoint name='# Workbooks'>
+          <zoom type='entire-view' />
+        </viewpoint>
+        <viewpoint name='#Users'>
+          <zoom type='entire-view' />
+        </viewpoint>
+        <viewpoint name='#Views'>
+          <zoom type='entire-view' />
+        </viewpoint>
+        <viewpoint name='Top 10 Users'>
+          <zoom type='entire-view' />
+        </viewpoint>
+        <viewpoint name='Top 10 Workbooks'>
+          <zoom type='entire-view' />
+        </viewpoint>
+      </viewpoints>
+      <active id='-1' />
+    </window>
+    <window class='worksheet' hidden='true' name='# Workbooks'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='worksheet' hidden='true' name='#Users'>
+      <cards>
+        <edge name='left'>
+          <strip size='222'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='worksheet' hidden='true' name='#Views'>
+      <cards>
+        <edge name='left'>
+          <strip size='247'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='219'>
+            <card mode='compact' param='[Parameters].[Parameter 1]' type='parameter' />
+            <card mode='compact' param='[Parameters].[Parameter 2]' type='parameter' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='worksheet' hidden='true' name='Top 10 Users'>
+      <cards>
+        <edge name='left'>
+          <strip size='300'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='worksheet' hidden='true' name='Top 10 Workbooks'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='219'>
+            <card param='[sqlproxy.0npc4wb18vdhm614wmx5k0a0xrny].[none:created_at:qk]' show-domain='false' show-null-ctrls='false' type='filter' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Daily Usage Report' width='192'>
+      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
+    </thumbnail>
+  </thumbnails>
+</workbook>

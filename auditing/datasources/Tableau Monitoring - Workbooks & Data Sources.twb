@@ -1,0 +1,960 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 10500.18.0510.1801                               -->
+<workbook source-build='10.5.4 (10500.18.0510.1801)' source-platform='win' upgrade-extracts='false' version='10.5' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <style>
+    <style-rule element='worksheet'>
+      <format attr='font-size' value='8' />
+      <format attr='color' value='#1b1b1b' />
+      <format attr='font-family' value='Tableau Regular' />
+    </style-rule>
+  </style>
+  <datasources>
+    <datasource caption='Tableau Monitoring - Workbooks &amp; Data Sources' inline='true' name='federated.05nzvem0s415p210a5auo1buwkxk' version='10.5'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='10.165.255.62' name='postgres.1cisqrx0egk1zw1bqltbx0tg3nyb'>
+            <connection authentication='username-password' class='postgres' dbname='workgroup' odbc-connect-string-extras='UseDeclareFetch=0' odbc-native-protocol='' one-time-sql='' port='8060' server='10.165.255.62' server-oauth='' server-userid='82' username='readonly' workgroup-auth-mode='prompt' />
+          </named-connection>
+        </named-connections>
+        <relation connection='postgres.1cisqrx0egk1zw1bqltbx0tg3nyb' name='events' type='text'>WITH&#13;&#10;view_stats AS &#13;&#10;----- retrieve the view stats from historical events -----&#13;&#10;&#9;(&#13;&#10;&#9;SELECT&#13;&#10;&#9;  ev.*&#13;&#10;&#9;, COALESCE(hwb.workbook_id, hds.datasource_id) AS view_object_id&#13;&#10;&#9;, COALESCE(hwb.name, hds.name) AS view_object_name&#13;&#10;&#9;, COALESCE(hwb.repository_url, hds.repository_url) AS view_repository_url&#13;&#10;&#9;FROM historical_events ev&#13;&#10;&#9;INNER JOIN historical_event_types evt ON evt.type_id = ev.historical_event_type_id&#13;&#10;&#9;LEFT JOIN hist_workbooks hwb ON hwb.id = ev.hist_workbook_id&#13;&#10;&#9;LEFT JOIN hist_datasources hds ON hds.id = ev.hist_datasource_id&#13;&#10;&#9;WHERE evt.name IN (&apos;Access View&apos;,&apos;Access Data Source&apos;)&#13;&#10;&#9;),&#13;&#10;&#13;&#10;bi AS&#13;&#10;----- determine who is part of BI -----&#13;&#10;&#9;(&#13;&#10;&#9;SELECT&#13;&#10;&#9;  gu.user_id&#13;&#10;&#9;, bool_or(CASE WHEN g.name LIKE &apos;BI%&apos; AND g.name &lt;&lt;&gt;&gt; &apos;BI - PowerUsers&apos; THEN true ELSE false END) AS user_is_part_of_bi&#13;&#10;&#9;-- the bool_or function returns TRUE if user is part os any user group that starts with BI&#13;&#10;&#9;FROM group_users gu&#13;&#10;&#9;INNER JOIN groups g ON g.id = gu.group_id&#13;&#10;&#9;GROUP BY 1&#13;&#10;&#9;),&#13;&#10;&#13;&#10;objects AS&#13;&#10;----- union workbook and data source information for easier joining later on -----&#13;&#10;&#9;(&#13;&#10;&#9;SELECT 84 AS type_id, id AS object_id, description, name, repository_url, project_id, owner_id, created_at AS object_created_at, updated_at AS object_updated_at, site_id&#13;&#10;&#9;FROM workbooks&#13;&#10;&#9;UNION ALL&#13;&#10;&#9;SELECT 112 AS type_id, id AS object_id, description, name, repository_url, project_id, owner_id, created_at AS object_created_at, updated_at AS object_update_at, site_id&#13;&#10;&#9;FROM datasources&#13;&#10;&#9;WHERE connectable&#13;&#10;&#9;),&#13;&#10;&#13;&#10;connections AS&#13;&#10;----- determine the connection types (e.g. Oracle, EXASOL) -----&#13;&#10;&#9;(&#13;&#10;&#9;-- workbooks that make use of published data sources (requires an additional join to determine the connection type)&#13;&#10;&#9;SELECT&#13;&#10;&#9;  84 AS type_id&#13;&#10;&#9;, &apos;Published&apos; AS connection_type&#13;&#10;&#9;, dc.owner_id AS object_id&#13;&#10;&#9;, dc2.dbclass AS conn_db_class&#13;&#10;&#9;, dc2.username AS conn_username&#13;&#10;&#9;, ds.id AS conn_datasource_id&#13;&#10;&#9;, dc2.has_extract&#13;&#10;&#9;FROM data_connections dc&#13;&#10;&#9;LEFT JOIN datasources ds ON ds.repository_url = dc.dbname AND ds.site_id = dc.site_id&#13;&#10;&#9;LEFT JOIN data_connections dc2 ON dc2.datasource_id = ds.id&#13;&#10;&#9;WHERE dc.owner_type = &apos;Workbook&apos;&#13;&#10;&#9;AND dc.dbclass = &apos;sqlproxy&apos;&#13;&#10;&#9;---------------------&#13;&#10;&#9;UNION ALL&#13;&#10;&#9;---------------------&#13;&#10;&#9;-- published data sources and workbooks that make use of embedded data sources&#13;&#10;&#9;SELECT&#13;&#10;&#9;  CASE WHEN dc.owner_type = &apos;Datasource&apos; THEN 112 WHEN dc.owner_type = &apos;Workbook&apos; THEN 84 END AS type_id&#13;&#10;&#9;, CASE WHEN dc.owner_type = &apos;Datasource&apos; THEN &apos;Datasource&apos; WHEN dc.owner_type = &apos;Workbook&apos; THEN &apos;Embedded&apos; END AS connection_type&#13;&#10;&#9;, dc.owner_id AS object_id&#13;&#10;&#9;, dc.dbclass AS conn_db_class&#13;&#10;&#9;, dc.username AS conn_username&#13;&#10;&#9;, dc.datasource_id AS conn_datasource_id&#13;&#10;&#9;, dc.has_extract&#13;&#10;&#9;FROM data_connections dc&#13;&#10;&#9;WHERE dc.owner_type = &apos;Datasource&apos;&#13;&#10;&#9;OR (dc.owner_type = &apos;Workbook&apos; AND dc.dbclass &lt;&lt;&gt;&gt; &apos;sqlproxy&apos;)&#13;&#10;&#9;)&#13;&#10;&#9;&#13;&#10;---------------------------------------------------------&#13;&#10;-- MAIN QUERY&#13;&#10;---------------------------------------------------------&#13;&#10;SELECT&#13;&#10;  a.id AS event_id&#13;&#10;, CASE COALESCE(a.type_id, a.historical_event_type_id) WHEN 84 THEN &apos;Workbooks&apos; WHEN 112 THEN &apos;Data Sources&apos; END object_type&#13;&#10;, COALESCE(obj.name, a.view_object_name) AS object_name&#13;&#10;, COALESCE(a.object_id, a.view_object_id) AS object_id&#13;&#10;, COALESCE(obj.repository_url, a.view_repository_url) AS object_url&#13;&#10;, CASE WHEN obj.object_id IS NULL THEN false ELSE true END is_active&#13;&#10;, obj.description AS object_description&#13;&#10;, obj.object_created_at&#13;&#10;, obj.object_updated_at&#13;&#10;, hp.name AS hist_project_name&#13;&#10;, p.name AS project_name&#13;&#10;, hu.name AS user_name&#13;&#10;, CASE WHEN u.id IS NULL THEN false ELSE true END user_is_active&#13;&#10;, CASE WHEN su.name IN (&apos;rmacgregor&apos;,&apos;sbryant&apos;,&apos;jgraham&apos;) THEN false ELSE bi.user_is_part_of_bi END user_is_part_of_bi&#13;&#10;, COALESCE(su.friendly_name, hu.name) AS friendly_user_name&#13;&#10;, osu.name AS owner_name&#13;&#10;, osu.friendly_name AS friendly_owner_name&#13;&#10;, a.created_at AS viewed_at&#13;&#10;, a.worker AS event_worker&#13;&#10;, COALESCE(site.name, hsite.name) as site_name&#13;&#10;, conn.conn_db_class&#13;&#10;, conn.conn_username&#13;&#10;, cds.name AS conn_datasource_name&#13;&#10;, conn.has_extract AS conn_has_extract&#13;&#10;, cds.repository_url AS conn_repository_url&#13;&#10;&#13;&#10;FROM&#13;&#10;&#9;(&#13;&#10;&#9;SELECT *&#13;&#10;&#9;FROM objects obj&#13;&#10;&#9;FULL JOIN view_stats&#13;&#10;&#9;&#9;ON view_stats.view_object_id = obj.object_id&#13;&#10;&#9;&#9;AND 1 = 0&#13;&#10;&#9;) a&#13;&#10;&#13;&#10;LEFT JOIN objects obj&#13;&#10;&#9;ON obj.object_id = COALESCE(a.object_id, a.view_object_id)&#13;&#10;&#9;AND obj.type_id = COALESCE(a.type_id, a.historical_event_type_id)&#13;&#10;&#13;&#10;LEFT JOIN hist_users hu ON hu.id = a.hist_actor_user_id&#13;&#10;LEFT JOIN users u ON u.id = hu.user_id&#13;&#10;LEFT JOIN system_users su ON su.id = u.system_user_id&#13;&#10;LEFT JOIN bi ON bi.user_id = hu.user_id&#13;&#10;LEFT JOIN hist_projects hp ON hp.id = a.hist_project_id&#13;&#10;LEFT JOIN hist_views hv ON hv.id = a.hist_view_id&#13;&#10;&#13;&#10;-- workbook current status&#13;&#10;LEFT JOIN projects p ON p.id = obj.project_id&#13;&#10;LEFT JOIN users ou ON ou.id = obj.owner_id&#13;&#10;LEFT JOIN system_users osu ON osu.id = ou.system_user_id&#13;&#10;LEFT JOIN hist_sites hsite ON hsite.id = a.hist_actor_site_id&#13;&#10;LEFT JOIN sites site ON site.id = obj.site_id&#13;&#10;&#13;&#10;-- data connections&#13;&#10;LEFT JOIN connections conn ON conn.object_id = obj.object_id AND conn.type_id = obj.type_id&#13;&#10;LEFT JOIN objects cds ON cds.object_id = conn.conn_datasource_id AND cds.type_id = 112</relation>
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>event_id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[event_id]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>event_id</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>10</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_type</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[object_type]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>object_type</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[object_name]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>object_name</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_id</remote-name>
+            <remote-type>3</remote-type>
+            <local-name>[object_id]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>object_id</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>4</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_INTEGER&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_SLONG&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_url</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[object_url]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>object_url</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>is_active</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[is_active]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>is_active</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_BIT&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_BIT&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_description</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[object_description]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>object_description</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_created_at</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[object_created_at]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>object_created_at</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TYPE_TIMESTAMP&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_TYPE_TIMESTAMP&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>object_updated_at</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[object_updated_at]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>object_updated_at</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TYPE_TIMESTAMP&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_TYPE_TIMESTAMP&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>hist_project_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[hist_project_name]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>hist_project_name</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>project_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[project_name]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>project_name</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>user_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[user_name]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>user_name</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>user_is_active</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[user_is_active]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>user_is_active</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_BIT&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_BIT&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>user_is_part_of_bi</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[user_is_part_of_bi]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>user_is_part_of_bi</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_BIT&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_BIT&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>friendly_user_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[friendly_user_name]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>friendly_user_name</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>owner_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[owner_name]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>owner_name</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>friendly_owner_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[friendly_owner_name]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>friendly_owner_name</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>viewed_at</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[viewed_at]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>viewed_at</remote-alias>
+            <ordinal>18</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_TYPE_TIMESTAMP&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_TYPE_TIMESTAMP&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>event_worker</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[event_worker]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>event_worker</remote-alias>
+            <ordinal>19</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>site_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[site_name]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>site_name</remote-alias>
+            <ordinal>20</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_db_class</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[conn_db_class]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>conn_db_class</remote-alias>
+            <ordinal>21</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>128</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_username</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[conn_username]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>conn_username</remote-alias>
+            <ordinal>22</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>128</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_datasource_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[conn_datasource_name]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>conn_datasource_name</remote-alias>
+            <ordinal>23</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>255</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+              <attribute datatype='string' name='TypeIsVarchar'>&quot;true&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_has_extract</remote-name>
+            <remote-type>11</remote-type>
+            <local-name>[conn_has_extract]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>conn_has_extract</remote-alias>
+            <ordinal>24</ordinal>
+            <local-type>boolean</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_BIT&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_BIT&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>conn_repository_url</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[conn_repository_url]</local-name>
+            <parent-name>[events]</parent-name>
+            <remote-alias>conn_repository_url</remote-alias>
+            <ordinal>25</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <width>8190</width>
+            <contains-null>true</contains-null>
+            <cast-to-local-type>true</cast-to-local-type>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;SQL_WLONGVARCHAR&quot;</attribute>
+              <attribute datatype='string' name='DebugWireType'>&quot;SQL_C_WCHAR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='# Objects' datatype='integer' name='[Calculation_1007398973617766403]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='COUNTD([object_id])' />
+      </column>
+      <column caption='# Unique Users' datatype='integer' name='[Calculation_1007398973617840132]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='COUNTD([user_name])' />
+      </column>
+      <column caption='Last Viewed per Workbook' datatype='datetime' name='[Calculation_3446661121548431361]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='{FIXED [object_id]: MAX([viewed_at])}' />
+      </column>
+      <column caption='Days Since Last View' datatype='real' name='[Calculation_3446661121548578818]' role='dimension' type='ordinal'>
+        <calculation class='tableau' formula='DATETRUNC(&apos;day&apos;, TODAY()) - DATETRUNC(&apos;day&apos;,[Calculation_3446661121548431361])' />
+      </column>
+      <column caption='# Views' datatype='integer' name='[Calculation_3592746634455330816]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='COUNTD([event_id])' />
+      </column>
+      <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column caption='Connection Datasource Name' datatype='string' name='[conn_datasource_name]' role='dimension' type='nominal' />
+      <column caption='Connection DB Class' datatype='string' name='[conn_db_class]' role='dimension' type='nominal' />
+      <column caption='Connection Has Extract' datatype='boolean' name='[conn_has_extract]' role='dimension' type='nominal' />
+      <column caption='Connection Repository URL' datatype='string' name='[conn_repository_url]' role='dimension' type='nominal' />
+      <column caption='Connection User Name' datatype='string' name='[conn_username]' role='dimension' type='nominal' />
+      <column aggregation='Sum' caption='Event ID' datatype='integer' name='[event_id]' role='dimension' type='ordinal' />
+      <column caption='Tableau Worker' datatype='string' name='[event_worker]' role='dimension' type='nominal' />
+      <column caption='Owner Friendly Name' datatype='string' name='[friendly_owner_name]' role='dimension' type='nominal' />
+      <column caption='User Friendly Name' datatype='string' name='[friendly_user_name]' role='dimension' type='nominal' />
+      <column caption='Project (hist)' datatype='string' name='[hist_project_name]' role='dimension' type='nominal' />
+      <column caption='T/F Is Active' datatype='boolean' name='[is_active]' role='dimension' type='nominal' />
+      <column caption='Date Created' datatype='datetime' name='[object_created_at]' role='dimension' type='ordinal' />
+      <column caption='Object Description' datatype='string' name='[object_description]' role='dimension' type='nominal' />
+      <column aggregation='Sum' caption='Object ID' datatype='integer' name='[object_id]' role='dimension' type='ordinal' />
+      <column caption='Object Name' datatype='string' name='[object_name]' role='dimension' type='nominal' />
+      <column caption='Workbook / Data Source' datatype='string' name='[object_type]' role='dimension' type='nominal' />
+      <column caption='Date Updated' datatype='datetime' name='[object_updated_at]' role='dimension' type='ordinal' />
+      <column caption='Object URL' datatype='string' name='[object_url]' role='dimension' type='nominal' />
+      <column caption='Owner User Name' datatype='string' name='[owner_name]' role='dimension' type='nominal' />
+      <column caption='Project' datatype='string' name='[project_name]' role='dimension' type='nominal' />
+      <column caption='Tableau Site' datatype='string' name='[site_name]' role='dimension' type='nominal' />
+      <column caption='T/F User is Active' datatype='boolean' name='[user_is_active]' role='dimension' type='nominal' />
+      <column caption='T/F User is Part of BI' datatype='boolean' name='[user_is_part_of_bi]' role='dimension' type='nominal' />
+      <column caption='User Name' datatype='string' name='[user_name]' role='dimension' type='nominal' />
+      <column caption='Viewed Date' datatype='datetime' name='[viewed_at]' role='dimension' type='ordinal' />
+      <folder name='connections' role='dimensions'>
+        <folder-item name='[conn_datasource_name]' type='field' />
+        <folder-item name='[conn_db_class]' type='field' />
+        <folder-item name='[conn_has_extract]' type='field' />
+        <folder-item name='[conn_repository_url]' type='field' />
+        <folder-item name='[conn_username]' type='field' />
+      </folder>
+      <folder name='objects' role='dimensions'>
+        <folder-item name='[friendly_owner_name]' type='field' />
+        <folder-item name='[is_active]' type='field' />
+        <folder-item name='[object_created_at]' type='field' />
+        <folder-item name='[object_description]' type='field' />
+        <folder-item name='[object_id]' type='field' />
+        <folder-item name='[object_name]' type='field' />
+        <folder-item name='[object_type]' type='field' />
+        <folder-item name='[object_updated_at]' type='field' />
+        <folder-item name='[object_url]' type='field' />
+        <folder-item name='[owner_name]' type='field' />
+        <folder-item name='[project_name]' type='field' />
+        <folder-item name='[site_name]' type='field' />
+      </folder>
+      <folder name='users' role='dimensions'>
+        <folder-item name='[friendly_user_name]' type='field' />
+        <folder-item name='[user_is_active]' type='field' />
+        <folder-item name='[user_is_part_of_bi]' type='field' />
+        <folder-item name='[user_name]' type='field' />
+      </folder>
+      <folder name='view events' role='dimensions'>
+        <folder-item name='[event_id]' type='field' />
+        <folder-item name='[event_worker]' type='field' />
+        <folder-item name='[hist_project_name]' type='field' />
+        <folder-item name='[viewed_at]' type='field' />
+      </folder>
+      <folder name='views' role='dimensions'>
+        <folder-item name='[Calculation_3446661121548431361]' type='field' />
+        <folder-item name='[Calculation_3446661121548578818]' type='field' />
+      </folder>
+      <extract count='-1' enabled='true' units='records'>
+        <connection access_mode='readonly' authentication='auth-none' author-locale='en_US' class='hyper' dbname='C:/Users/dteo/Desktop/svn/Data Sources/zz - BI Platforms Monitoring/Data Extracts/Tableau Monitoring - Workbooks and Data Sources.hyper' default-settings='yes' schema='Extract' sslmode='' tablename='Extract' update-time='08/15/2018 01:57:53 PM' username='tableau_internal_user'>
+          <relation name='Extract' table='[Extract].[Extract]' type='table' />
+          <refresh>
+            <refresh-event add-from-file-path='' increment-value='%null%' refresh-type='create' rows-inserted='2331427' timestamp-start='2018-08-15 13:57:53.062' />
+          </refresh>
+          <metadata-records>
+            <metadata-record class='column'>
+              <remote-name>event_id</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[event_id]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>event_id</remote-alias>
+              <ordinal>0</ordinal>
+              <family>events</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>20378</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>object_type</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[object_type]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>object_type</remote-alias>
+              <ordinal>1</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>object_name</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[object_name]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>object_name</remote-alias>
+              <ordinal>2</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>65</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>object_id</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[object_id]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>object_id</remote-alias>
+              <ordinal>3</ordinal>
+              <family>events</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>65</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>object_url</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[object_url]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>object_url</remote-alias>
+              <ordinal>4</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>65</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>is_active</remote-name>
+              <remote-type>11</remote-type>
+              <local-name>[is_active]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>is_active</remote-alias>
+              <ordinal>5</ordinal>
+              <family>events</family>
+              <local-type>boolean</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>object_description</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[object_description]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>object_description</remote-alias>
+              <ordinal>6</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>12</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>object_created_at</remote-name>
+              <remote-type>135</remote-type>
+              <local-name>[object_created_at]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>object_created_at</remote-alias>
+              <ordinal>7</ordinal>
+              <family>events</family>
+              <local-type>datetime</local-type>
+              <aggregation>Year</aggregation>
+              <approx-count>60</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>object_updated_at</remote-name>
+              <remote-type>135</remote-type>
+              <local-name>[object_updated_at]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>object_updated_at</remote-alias>
+              <ordinal>8</ordinal>
+              <family>events</family>
+              <local-type>datetime</local-type>
+              <aggregation>Year</aggregation>
+              <approx-count>60</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>hist_project_name</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[hist_project_name]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>hist_project_name</remote-alias>
+              <ordinal>9</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>17</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>project_name</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[project_name]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>project_name</remote-alias>
+              <ordinal>10</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>17</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>user_name</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[user_name]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>user_name</remote-alias>
+              <ordinal>11</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>187</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>user_is_active</remote-name>
+              <remote-type>11</remote-type>
+              <local-name>[user_is_active]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>user_is_active</remote-alias>
+              <ordinal>12</ordinal>
+              <family>events</family>
+              <local-type>boolean</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>user_is_part_of_bi</remote-name>
+              <remote-type>11</remote-type>
+              <local-name>[user_is_part_of_bi]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>user_is_part_of_bi</remote-alias>
+              <ordinal>13</ordinal>
+              <family>events</family>
+              <local-type>boolean</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>3</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>friendly_user_name</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[friendly_user_name]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>friendly_user_name</remote-alias>
+              <ordinal>14</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>187</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>owner_name</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[owner_name]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>owner_name</remote-alias>
+              <ordinal>15</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>31</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>friendly_owner_name</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[friendly_owner_name]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>friendly_owner_name</remote-alias>
+              <ordinal>16</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>31</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>viewed_at</remote-name>
+              <remote-type>135</remote-type>
+              <local-name>[viewed_at]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>viewed_at</remote-alias>
+              <ordinal>17</ordinal>
+              <family>events</family>
+              <local-type>datetime</local-type>
+              <aggregation>Year</aggregation>
+              <approx-count>20378</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>event_worker</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[event_worker]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>event_worker</remote-alias>
+              <ordinal>18</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>3</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>site_name</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[site_name]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>site_name</remote-alias>
+              <ordinal>19</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>conn_db_class</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[conn_db_class]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>conn_db_class</remote-alias>
+              <ordinal>20</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>6</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>conn_username</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[conn_username]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>conn_username</remote-alias>
+              <ordinal>21</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>34</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>conn_datasource_name</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[conn_datasource_name]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>conn_datasource_name</remote-alias>
+              <ordinal>22</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>36</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>conn_has_extract</remote-name>
+              <remote-type>11</remote-type>
+              <local-name>[conn_has_extract]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>conn_has_extract</remote-alias>
+              <ordinal>23</ordinal>
+              <family>events</family>
+              <local-type>boolean</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>3</approx-count>
+              <contains-null>true</contains-null>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>conn_repository_url</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[conn_repository_url]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>conn_repository_url</remote-alias>
+              <ordinal>24</ordinal>
+              <family>events</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>36</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+            </metadata-record>
+          </metadata-records>
+        </connection>
+      </extract>
+      <layout dim-ordering='alphabetic' dim-percentage='0.681055' measure-ordering='alphabetic' measure-percentage='0.318945' show-structure='false' user-set-layout='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;Reino Unido&quot;' />
+      </semantic-values>
+      <date-options start-of-week='monday' />
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='Sheet 1'>
+      <table>
+        <view>
+          <datasources />
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='cols' value='false' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+          </pane>
+        </panes>
+        <rows />
+        <cols />
+      </table>
+    </worksheet>
+  </worksheets>
+  <windows source-height='30'>
+    <window class='worksheet' maximized='true' name='Sheet 1'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <default-map-tool-selection tool='2' />
+      </viewpoint>
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Sheet 1' width='192'>
+      iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAACXBIWXMAAA7DAAAOwwHHb6hk
+      AAACFUlEQVR4nO3TMQEAIAzAMMC/5yFjRxMFfXpnZg5Eve0A2GQA0gxAmgFIMwBpBiDNAKQZ
+      gDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFI
+      MwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQD
+      kGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBp
+      BiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA
+      0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDN
+      AKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxA
+      mgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZ
+      gDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFI
+      MwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKR9Y+0F
+      fBUOM1sAAAAASUVORK5CYII=
+    </thumbnail>
+  </thumbnails>
+</workbook>
